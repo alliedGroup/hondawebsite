@@ -5,34 +5,10 @@
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzFbN2h_5feZzq-LHUNZMdUIWb4eGRhS18qQWjEBlkobHBpVS3tq9xOKu21gVMfJAk_/exec";
 
 // ============================================================
-// HELPER: FIX GOOGLE DRIVE LINKS
-// Automatically converts "view" links to "direct" links
-// ============================================================
-function getDirectLink(url, isBrochure = false) {
-    if (!url || url === "#") return isBrochure ? "#" : "https://placehold.co/400x300?text=No+Image";
-    
-    // Check if it's a Google Drive View Link
-    if (url.includes("drive.google.com") && url.includes("/view")) {
-        // Extract the ID
-        const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-        if (idMatch && idMatch[1]) {
-            // If brochure (PDF), use 'view' export to open in browser, or 'download' to force download
-            const exportType = isBrochure ? "view" : "view"; 
-            return `https://drive.google.com/uc?export=${exportType}&id=${idMatch[1]}`;
-        }
-    }
-    return url;
-}
-
-// ============================================================
 // STATE (Starts Empty - Populates ONLY from Sheet)
 // ============================================================
 let appData = {
-    config: {
-        whatsapp_number: "919854092624",
-        facebook_url: "https://www.facebook.com", 
-        instagram_url: "https://www.instagram.com"
-    },
+    config: {},
     services: [],
     offers: [],
     dealers: [],
@@ -40,10 +16,28 @@ let appData = {
 };
 
 // ============================================================
+// HELPER: FIX GOOGLE DRIVE LINKS
+// Automatically converts "view" links to "direct image" links
+// ============================================================
+function getDirectImage(url) {
+    if (!url) return "https://placehold.co/400x300?text=No+Image";
+    
+    // Check if it's a Google Drive View Link
+    if (url.includes("drive.google.com") && url.includes("/view")) {
+        // Extract the ID
+        const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (idMatch && idMatch[1]) {
+            return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+        }
+    }
+    return url;
+}
+
+// ============================================================
 // INITIALIZATION
 // ============================================================
 async function init() {
-    // 1. Show Loading State for content areas
+    // 1. Show Loading State
     showLoadingState();
 
     // 2. Fetch from Google Sheet
@@ -59,19 +53,9 @@ async function init() {
                 if (remoteData.specs && remoteData.products) {
                     remoteData.products = mergeSpecsIntoProducts(remoteData.products, remoteData.specs);
                 }
-                
-                // Clean Config Keys
-                if(remoteData.config) {
-                    const cleanConfig = {};
-                    for(let key in remoteData.config) {
-                        cleanConfig[key.trim()] = remoteData.config[key];
-                    }
-                    remoteData.config = cleanConfig;
-                }
 
                 // Update App Data & Render
-                appData = { ...appData, ...remoteData };
-                
+                appData = remoteData;
                 renderAllSections();
             }
         } catch (e) {
@@ -127,6 +111,7 @@ function mergeSpecsIntoProducts(products, rawSpecs) {
 
         for (const [sheetKey, displayKey] of Object.entries(categories)) {
             if (pSpecs[sheetKey]) {
+                // Split cell content by new line, then by colon
                 const lines = pSpecs[sheetKey].toString().split('\n');
                 processedSpecs[displayKey] = lines.map(line => {
                     const parts = line.split(':');
@@ -143,7 +128,7 @@ function mergeSpecsIntoProducts(products, rawSpecs) {
 }
 
 function renderAllSections() {
-    // Note: renderHero() removed so it doesn't touch the HTML video
+    renderHero();
     renderSocials();
     renderProducts();
     renderOffers();
@@ -153,6 +138,20 @@ function renderAllSections() {
 }
 
 // --- RENDERERS ---
+
+function renderHero() {
+    const videoParent = document.getElementById('hero-video');
+    if (videoParent && appData.config && appData.config.hero_video_url) {
+        const currentSrc = videoParent.querySelector('source') ? videoParent.querySelector('source').src : '';
+        // Use helper to fix drive links if user put one there
+        const videoUrl = getDirectImage(appData.config.hero_video_url).replace('&export=view','&export=download'); // Video needs download link often
+        
+        if (currentSrc !== videoUrl) {
+             videoParent.innerHTML = `<source src="${videoUrl}" type="video/mp4">`;
+             videoParent.load();
+        }
+    }
+}
 
 function renderSocials() {
     const waLink = document.getElementById('wa-link');
@@ -176,7 +175,7 @@ function renderSocials() {
                 html += `<a href="${appData.config[key]}" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab ${icon} text-lg"></i></a>`;
             }
         }
-        if(html) container.innerHTML = html;
+        container.innerHTML = html;
     }
 }
 
@@ -184,7 +183,7 @@ function renderServiceImages() {
     if (!appData.services) return;
     appData.services.forEach(s => {
         const img = document.getElementById(`img-service-${s.service_id || s.id}`);
-        if(img && s.image_url) img.src = getDirectLink(s.image_url);
+        if(img && s.image_url) img.src = getDirectImage(s.image_url);
     });
 }
 
@@ -200,7 +199,7 @@ function renderOffers() {
     container.innerHTML = appData.offers.map(offer => `
         <div onclick="openEnquiryModal('${offer.type || 'Offer'}: ${offer.title}')" class="bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition duration-300 flex flex-col cursor-pointer h-full">
             <div class="relative h-56 overflow-hidden">
-                <img src="${getDirectLink(offer.image_url)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${offer.title}">
+                <img src="${getDirectImage(offer.image_url)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${offer.title}">
                 <div class="absolute top-4 left-4 bg-honda-red text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Limited Time</div>
             </div>
             <div class="p-6 flex-grow flex flex-col">
@@ -226,7 +225,7 @@ function renderDealers() {
     container.innerHTML = appData.dealers.map(dealer => `
         <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl transition flex flex-col sm:flex-row gap-6 group">
             <div class="w-full sm:w-32 h-32 bg-gray-50 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
-                <img src="${getDirectLink(dealer.image_url)}" class="w-full h-full object-cover" alt="${dealer.name}">
+                <img src="${getDirectImage(dealer.image_url)}" class="w-full h-full object-cover" alt="${dealer.name}">
             </div>
             <div class="flex-grow">
                 <h3 class="text-xl font-bold text-gray-900 mb-1">${dealer.name}</h3>
@@ -259,7 +258,7 @@ function renderProducts() {
 
 function createCardHTML(p) {
     // Use the fixer for product images too
-    const imgUrl = getDirectLink(p.image_url);
+    const imgUrl = getDirectImage(p.image_url);
     const displayPrice = p.price ? `₹ ${p.price}` : "Check Price";
 
     return `
@@ -364,17 +363,14 @@ function openModal(id) {
     
     const brochureLink = document.getElementById('modal-brochure');
     if(brochureLink) {
-        // Use the fixer for brochure links too
-        const fixedBrochureUrl = getDirectLink(baseBrochure, true);
-        
-        if(fixedBrochureUrl && fixedBrochureUrl !== "#") {
-            brochureLink.href = fixedBrochureUrl;
+        if(baseBrochure && baseBrochure !== "#") {
+            brochureLink.href = baseBrochure;
             brochureLink.classList.remove('hidden');
         } else { brochureLink.classList.add('hidden'); }
     }
     
     const modalImg = document.getElementById('modal-img');
-    modalImg.src = getDirectLink(p.image_url); 
+    modalImg.src = getDirectImage(p.image_url); // Fix preview
     modalImg.onclick = function() { openLightbox(this.src); };
     
     // Variants
@@ -450,7 +446,7 @@ function changeModalImage(element, imgUrl) {
         btn.classList.add('ring-offset-2', 'ring-2', 'ring-honda-red');
     }
     // Use fixer here too
-    const fixedUrl = getDirectLink(imgUrl);
+    const fixedUrl = getDirectImage(imgUrl);
     if(fixedUrl && fixedUrl.startsWith('http')) {
         const img = document.getElementById('modal-img');
         img.style.opacity = '0.5';
@@ -463,15 +459,10 @@ function selectVariant(element, price, brochure) {
     document.querySelectorAll('.variant-btn').forEach(btn => btn.classList.remove('active', 'bg-honda-red', 'text-white', 'border-honda-red'));
     element.classList.add('active', 'bg-honda-red', 'text-white', 'border-honda-red');
     if(price) document.getElementById('modal-price').innerText = 'Ex-Showroom: ₹ ' + price.replace('*','');
-    
-    // UPDATE BROCHURE ON VARIANT CLICK
-    const link = document.getElementById('modal-brochure');
-    const fixedBrochureUrl = getDirectLink(brochure, true);
-    if(fixedBrochureUrl) {
-        link.href = fixedBrochureUrl;
+    if(brochure && brochure !== "#") {
+        const link = document.getElementById('modal-brochure');
+        link.href = brochure;
         link.classList.remove('hidden');
-    } else {
-        link.classList.add('hidden');
     }
 }
 
