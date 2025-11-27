@@ -25,272 +25,106 @@ function getDirectLink(url, isBrochure = false) {
 }
 
 // ============================================================
-// DEFAULT DATA (Fallback)
+// STATE (Starts Empty - Populates ONLY from Sheet)
 // ============================================================
 let appData = {
-    config: {
-        // UPDATED: Points to your local video file by default
-        hero_video_url: "videos/play1home.mp4", 
-        whatsapp_number: "919854092624",
-        facebook_url: "https://facebook.com",
-        instagram_url: "https://instagram.com",
-        youtube_url: "https://youtube.com",
-        twitter_url: "https://twitter.com",
-        linkedin_url: "https://linkedin.com"
-    },
-    services: [
-        { id: "shield", image_url: "https://placehold.co/600x400/f8f9fa/cc0000?text=Honda+Shield+Graphic" },
-        { id: "oil", image_url: "https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Oil" },
-        { id: "parts", image_url: "https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Parts" }
-    ],
-    offers: [
-        {
-            title: "Low Down Payment",
-            description: "Bring home your dream Honda with minimum down payment starting from just ₹3,999*. Easy documentation and quick approval.",
-            image_url: "https://placehold.co/800x400/CC0000/FFFFFF?text=Zero+Down+Payment",
-            type: "Finance"
-        },
-        {
-            title: "Student Special Offer",
-            description: "Exclusive cashback of up to ₹5,000* for students. Valid on showing a valid College/University ID card.",
-            image_url: "https://placehold.co/800x400/0000CC/FFFFFF?text=Student+Special",
-            type: "Special"
-        }
-    ],
-    dealers: [
-        {
-            name: "Ashangbam Honda",
-            location: "Chingya Leikai, Fulertal, Dist.- Cachar",
-            image_url: "https://placehold.co/150x150/png?text=Ashangbam",
-            sales_contact: "9435627287",
-            service_contact: "6000732287",
-            email: "arautomobileft@gmail.com"
-        },
-        {
-            name: "Lovnish Honda",
-            location: "Patharkandi Road, Kanisail, Karimganj",
-            image_url: "https://placehold.co/150x150/png?text=Lovnish",
-            sales_contact: "9716169455",
-            service_contact: "9401393100",
-            email: "barakhonda.kmj@gmail.com"
-        },
-        {
-            name: "B K Motors",
-            location: "Madhumala, Patharkandi",
-            image_url: "https://placehold.co/150x150/png?text=BK+Motors",
-            sales_contact: "", 
-            service_contact: "9101992269",
-            email: "bkmotors69@gmail.com"
-        },
-        {
-            name: "HKD Honda",
-            location: "College Road, Hailakandi",
-            image_url: "https://placehold.co/150x150/png?text=HKD+Honda",
-            sales_contact: "8011206913",
-            service_contact: "",
-            email: "hkdhonda2023@gmail.com"
-        }
-    ],
-    products: [
-        // MOTORCYCLES
-        {
-            id: "hornet20",
-            name: "Hornet 2.0",
-            type: "Motorcycle",
-            price: "1,39,000*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Hornet2.0/Hornet2.0-home-banner-m.png",
-            variants: [
-                { name: "Standard (OBD-2)", price: "1,39,000*", brochure: "https://drive.google.com/file/d/1ZI6SIfdb1dJLrvOKkO4D_bEjJiupLEYH/view?usp=drive_link" },
-                { name: "Repsol Edition", price: "1,40,000*", brochure: "#" }
-            ],
-            colors: [{ name: "Red", img: "" }]
-        },
-        {
-            id: "sp125",
-            name: "SP 125",
-            type: "Motorcycle",
-            price: "86,017*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/SP125/sp125-home-banner-m.png",
-            variants: [
-                { name: "Drum", price: "86,017*", brochure: "#" },
-                { name: "Disc", price: "90,017*", brochure: "#" }
-            ],
-            colors: [{ name: "Black", img: "" }]
-        },
-        {
-            id: "shine125",
-            name: "Shine 125",
-            type: "Motorcycle",
-            price: "79,800*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Shine/shine-home-banner-m.png",
-            variants: [
-                { name: "Drum", price: "79,800*", brochure: "#" },
-                { name: "Disc", price: "83,800*", brochure: "#" }
-            ],
-            colors: [{ name: "Geny Grey", img: "" }]
-        },
-        {
-            id: "unicorn",
-            name: "Unicorn",
-            type: "Motorcycle",
-            price: "1,09,800*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Unicorn/unicorn-home-banner-m.png",
-            variants: [{ name: "Standard", price: "1,09,800*", brochure: "#" }],
-            colors: [{ name: "Black", img: "" }]
-        },
-        {
-            id: "sp160",
-            name: "SP 160",
-            type: "Motorcycle",
-            price: "1,17,500*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/SP160/sp160-home-banner-m.png",
-            variants: [
-                { name: "Single Disc", price: "1,17,500*", brochure: "#" },
-                { name: "Double Disc", price: "1,21,900*", brochure: "#" }
-            ],
-            colors: [{ name: "Matte Marvel Blue", img: "" }]
-        },
-        {
-            id: "cd110",
-            name: "CD 110 Dream",
-            type: "Motorcycle",
-            price: "73,400*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/CD110/CD110-home-banner-m.png",
-            variants: [{ name: "Standard", price: "73,400*", brochure: "#" }],
-            colors: [{ name: "Black", img: "" }]
-        },
-        {
-            id: "livo",
-            name: "Livo",
-            type: "Motorcycle",
-            price: "78,500*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Livo/Livo-home-banner-m.png",
-            variants: [
-                { name: "Drum", price: "78,500*", brochure: "#" },
-                { name: "Disc", price: "82,500*", brochure: "#" }
-            ],
-            colors: [{ name: "Athletic Blue", img: "" }]
-        },
-        {
-            id: "xblade",
-            name: "X-Blade",
-            type: "Motorcycle",
-            price: "1,21,313*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/XBlade/XBlade-home-banner-m.png",
-            variants: [
-                { name: "Single Disc", price: "1,21,313*", brochure: "#" }
-            ],
-            colors: [{ name: "Spartan Red", img: "" }]
-        },
-        // --- SCOOTERS ---
-        {
-            id: "activa6g",
-            name: "Activa 6G",
-            type: "Scooter",
-            price: "76,234*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Activa/Activa-home-banner-m.png",
-            variants: [
-                { name: "Standard", price: "76,234*", brochure: "#" },
-                { name: "H-Smart", price: "82,234*", brochure: "#" }
-            ],
-            colors: [{ name: "White", img: "" }]
-        },
-        {
-            id: "activa125",
-            name: "Activa 125",
-            type: "Scooter",
-            price: "79,806*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Activa125/Activa125-home-banner-m.png",
-            variants: [
-                { name: "Drum", price: "79,806*", brochure: "#" },
-                { name: "Disc", price: "86,979*", brochure: "#" }
-            ],
-            colors: [{ name: "Pearl Night Star Black", img: "" }]
-        },
-        {
-            id: "dio",
-            name: "Dio",
-            type: "Scooter",
-            price: "70,211*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Dio/Dio-home-banner-m.png",
-            variants: [
-                { name: "Standard", price: "70,211*", brochure: "#" },
-                { name: "Deluxe", price: "74,212*", brochure: "#" }
-            ],
-            colors: [{ name: "Sports Red", img: "" }]
-        },
-        {
-            id: "dio125",
-            name: "Dio 125",
-            type: "Scooter",
-            price: "83,400*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Dio125/dio125-home-banner-m.png",
-            variants: [
-                { name: "Standard", price: "83,400*", brochure: "#" }
-            ],
-            colors: [{ name: "Pearl Siren Blue", img: "" }]
-        },
-        {
-            id: "grazia125",
-            name: "Grazia 125",
-            type: "Scooter",
-            price: "82,520*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Grazia/Grazia-home-banner-m.png",
-            variants: [
-                { name: "Drum", price: "82,520*", brochure: "#" }
-            ],
-            colors: [{ name: "Matte Axis Grey", img: "" }]
-        }
-    ]
+    config: {},
+    services: [],
+    offers: [],
+    dealers: [],
+    products: []
 };
 
 // ============================================================
 // INITIALIZATION
 // ============================================================
 async function init() {
-    // 1. RENDER IMMEDIATELY (No waiting!)
-    renderAllSections();
+    // 1. Show Loading State
+    showLoadingState();
 
-    // 2. BACKGROUND UPDATE (Silent fetch from sheet)
+    // 2. Fetch from Google Sheet
     if (!GOOGLE_SCRIPT_URL.includes("PASTE_YOUR")) {
         try {
             const response = await fetch(GOOGLE_SCRIPT_URL);
             const remoteData = await response.json();
             
             if (remoteData) {
-                console.log("Connected to Google Sheet - Updating Data");
+                console.log("Connected to Google Sheet");
                 
-                // Merge the simple sheet specs into the products objects
+                // Merge "Wide" Specs into Products
                 if (remoteData.specs && remoteData.products) {
                     remoteData.products = mergeSpecsIntoProducts(remoteData.products, remoteData.specs);
                 }
 
-                appData = { ...appData, ...remoteData };
-                renderAllSections(); // Re-render with fresh data
+                // Update App Data & Render
+                appData = remoteData;
+                renderAllSections();
             }
         } catch (e) {
-            console.log("Using local default data (Sheet fetch failed or offline).");
+            console.error("Error fetching data:", e);
+            showErrorState();
         }
+    } else {
+        console.warn("Google Script URL is missing.");
     }
+}
+
+function showLoadingState() {
+    const loadingHTML = `
+        <div class="col-span-full text-center py-20">
+            <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-honda-red mx-auto mb-3"></div>
+            <p class="text-gray-400 text-sm">Loading details...</p>
+        </div>`;
+    
+    const ids = ['motorcycle-grid', 'scooter-grid', 'offers-grid', 'dealers-grid'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = loadingHTML;
+    });
+}
+
+function showErrorState() {
+    const errorHTML = `<p class="col-span-full text-center py-10 text-red-500">Unable to load content. Please refresh.</p>`;
+    const ids = ['motorcycle-grid', 'scooter-grid'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = errorHTML;
+    });
 }
 
 // --- HELPER: PARSE SHEET SPECS ---
 function mergeSpecsIntoProducts(products, rawSpecs) {
     return products.map(p => {
+        // Find the row in 'Specs' tab where product_id matches
+        // Using loose equality (==) to handle string/number mismatch
         const pSpecs = rawSpecs.find(s => s.product_id == p.id); 
+        
         if (!pSpecs) return p;
+
         const processedSpecs = {};
-        const categories = { "Body": "Body Dimensions", "Engine": "Engine", "Transmission": "Transmission", "Tyres": "Tyres & Brakes", "Frame": "Frame & Suspension", "Electricals": "Electricals" };
+        const categories = {
+            "Body": "Body Dimensions",
+            "Engine": "Engine",
+            "Transmission": "Transmission",
+            "Tyres": "Tyres & Brakes",
+            "Frame": "Frame & Suspension",
+            "Electricals": "Electricals"
+        };
+
         for (const [sheetKey, displayKey] of Object.entries(categories)) {
             if (pSpecs[sheetKey]) {
+                // Split cell content by new line, then by colon
                 const lines = pSpecs[sheetKey].toString().split('\n');
                 processedSpecs[displayKey] = lines.map(line => {
                     const parts = line.split(':');
-                    if (parts.length >= 2) return { label: parts[0].trim(), value: parts.slice(1).join(':').trim() };
+                    if (parts.length >= 2) {
+                        return { label: parts[0].trim(), value: parts.slice(1).join(':').trim() };
+                    }
                     return null;
                 }).filter(item => item !== null);
             }
         }
+        
         return { ...p, specs: processedSpecs };
     });
 }
@@ -306,22 +140,19 @@ function renderAllSections() {
 }
 
 // --- RENDERERS ---
+
 function renderHero() {
     const videoParent = document.getElementById('hero-video');
-    if (videoParent && appData.config.hero_video_url) {
-        // Updated logic to handle local files correctly
-        let videoUrl = appData.config.hero_video_url;
+    // Only update video if config exists AND it's different from current source
+    // This respects the hardcoded local video if sheet is empty/loading
+    if (videoParent && appData.config && appData.config.hero_video_url) {
+        const currentSrc = videoParent.querySelector('source') ? videoParent.querySelector('source').src : '';
+        // Use helper to fix drive links if user put one there
+        const videoUrl = getDirectLink(appData.config.hero_video_url).replace('&export=view','&export=download'); // Video needs download link often
         
-        // If it's a Google Drive link, fix it. If it's a local path, leave it.
-        if (videoUrl.includes('drive.google.com')) {
-            videoUrl = getDirectLink(videoUrl).replace('&export=view','&export=download');
-        }
-        
-        const currentSource = videoParent.querySelector('source');
-        const currentSrc = currentSource ? currentSource.src : '';
-        
-        // Check if the current source contains the video URL (handles absolute vs relative path mismatch)
-        if (!currentSrc.includes(videoUrl)) {
+        // Check if the sheet URL is actually different from what's already playing (e.g. local file)
+        // We check if the new URL is effectively different.
+        if (!currentSrc.endsWith(videoUrl) && currentSrc !== videoUrl) {
              videoParent.innerHTML = `<source src="${videoUrl}" type="video/mp4">`;
              videoParent.load();
         }
@@ -330,18 +161,26 @@ function renderHero() {
 
 function renderSocials() {
     const waLink = document.getElementById('wa-link');
-    if(waLink && appData.config.whatsapp_number) waLink.href = `https://wa.me/${appData.config.whatsapp_number}`;
-    
-    const socialMap = {'facebook_url':'fa-facebook-f', 'instagram_url':'fa-instagram', 'youtube_url':'fa-youtube', 'linkedin_url':'fa-linkedin-in', 'twitter_url':'fa-x-twitter'};
+    if(waLink && appData.config && appData.config.whatsapp_number) {
+        waLink.href = `https://wa.me/${appData.config.whatsapp_number}`;
+    }
+
+    const socialMap = {
+        'facebook_url': 'fa-facebook-f',
+        'instagram_url': 'fa-instagram',
+        'youtube_url': 'fa-youtube',
+        'linkedin_url': 'fa-linkedin-in',
+        'twitter_url': 'fa-x-twitter'
+    };
+
     const container = document.getElementById('social-links-container');
-    if(container) {
+    if(container && appData.config) {
         let html = '';
         for (const [key, icon] of Object.entries(socialMap)) {
             if(appData.config[key]) {
                 html += `<a href="${appData.config[key]}" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab ${icon} text-lg"></i></a>`;
             }
         }
-        // Only update if config exists, otherwise keep HTML default
         if(html) container.innerHTML = html;
     }
 }
@@ -357,6 +196,12 @@ function renderServiceImages() {
 function renderOffers() {
     const container = document.getElementById('offers-grid');
     if (!container) return;
+    
+    if (!appData.offers || appData.offers.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-400 col-span-full">No offers available at the moment.</p>';
+        return;
+    }
+
     container.innerHTML = appData.offers.map(offer => `
         <div onclick="openEnquiryModal('${offer.type || 'Offer'}: ${offer.title}')" class="bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition duration-300 flex flex-col cursor-pointer h-full">
             <div class="relative h-56 overflow-hidden">
@@ -377,6 +222,12 @@ function renderOffers() {
 function renderDealers() {
     const container = document.getElementById('dealers-grid');
     if (!container) return;
+    
+    if (!appData.dealers || appData.dealers.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-400 col-span-full">Network details loading...</p>';
+        return;
+    }
+
     container.innerHTML = appData.dealers.map(dealer => `
         <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl transition flex flex-col sm:flex-row gap-6 group">
             <div class="w-full sm:w-32 h-32 bg-gray-50 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
@@ -401,6 +252,8 @@ function renderProducts() {
 
     if (motoContainer) motoContainer.innerHTML = '';
     if (scooterContainer) scooterContainer.innerHTML = '';
+    
+    if (!appData.products || appData.products.length === 0) return;
 
     const motorcycles = appData.products.filter(p => p.type.toLowerCase().includes('motorcycle'));
     motorcycles.forEach(p => { if (motoContainer) motoContainer.innerHTML += createCardHTML(p); });
@@ -410,6 +263,7 @@ function renderProducts() {
 }
 
 function createCardHTML(p) {
+    // Use the fixer for product images too
     const imgUrl = getDirectLink(p.image_url);
     const displayPrice = p.price ? `₹ ${p.price}` : "Check Price";
 
@@ -417,7 +271,9 @@ function createCardHTML(p) {
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden cursor-pointer hover:shadow-2xl transition duration-300 group flex flex-col h-full" onclick="openModal('${p.id}')">
         <div class="h-52 bg-gray-50 flex items-center justify-center p-6 overflow-hidden relative">
             <img src="${imgUrl}" alt="${p.name}" class="h-full object-contain group-hover:scale-110 group-hover:-rotate-2 transition duration-500">
-            <div class="absolute top-3 right-3 bg-white rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition duration-300"><i class="fas fa-arrow-right text-honda-red"></i></div>
+            <div class="absolute top-3 right-3 bg-white rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition duration-300">
+                <i class="fas fa-arrow-right text-honda-red"></i>
+            </div>
         </div>
         <div class="p-5 flex flex-col flex-grow">
             <span class="text-xs font-bold text-honda-red uppercase tracking-wider">${p.type}</span>
@@ -445,7 +301,9 @@ function openEnquiryModal(type, modelName = null) {
     const title = document.getElementById('enquiry-title');
     const select = document.getElementById('modal-enquiry-type');
     const modelSelect = document.getElementById('modal-model');
+    
     if(title) title.innerText = type.includes(':') ? 'Enquiry: ' + type.split(':')[0] : type;
+    
     if(select) {
         if(type.includes("Exchange")) select.value = "Exchange";
         else if(type.includes("Service")) select.value = "Service Booking";
@@ -454,6 +312,7 @@ function openEnquiryModal(type, modelName = null) {
         else select.value = "General Enquiry";
         toggleModelDropdown(select.value);
     }
+
     if (modelName && modelSelect) {
         document.getElementById('model-select-container').classList.remove('hidden');
         select.value = "New Model";
@@ -463,23 +322,35 @@ function openEnquiryModal(type, modelName = null) {
     document.body.style.overflow = 'hidden';
 }
 
-function closeEnquiryModal() { document.getElementById('enquiry-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
+function closeEnquiryModal() {
+    document.getElementById('enquiry-modal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
 function toggleModelDropdown(type) {
     const container = document.getElementById('model-select-container');
     const field = document.getElementById('modal-model');
-    if (type === 'New Model' || type === 'Exchange') { container.classList.remove('hidden'); field.required = true; } 
-    else { container.classList.add('hidden'); field.required = false; }
+    if (type === 'New Model' || type === 'Exchange') {
+        container.classList.remove('hidden');
+        field.required = true;
+    } else {
+        container.classList.add('hidden');
+        field.required = false;
+    }
 }
+
 function populateModelDropdown() {
     const modelSelect = document.getElementById('modal-model');
     if (!modelSelect) return;
     modelSelect.innerHTML = '<option value="" disabled selected>Select Model</option>';
-    appData.products.forEach(p => {
-        const option = document.createElement('option');
-        option.value = p.name;
-        option.innerText = p.name;
-        modelSelect.appendChild(option);
-    });
+    if(appData.products) {
+        appData.products.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.name;
+            option.innerText = p.name;
+            modelSelect.appendChild(option);
+        });
+    }
 }
 
 function openModal(id) {
