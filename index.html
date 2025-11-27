@@ -104,11 +104,14 @@
         
         <!-- VIEW: HOME -->
         <div id="view-home" class="view-section page-enter">
-            <!-- Hero -->
+            <!-- Hero with Video -->
             <section class="relative h-[500px] flex items-center bg-gray-900 overflow-hidden">
                 <div class="absolute inset-0">
+                    <!-- Updated: HTML-only video background -->
                     <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-50">
                         <source src="videos/play1home.mp4" type="video/mp4">
+                        <!-- Fallback image if video fails -->
+                        <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&q=80&w=1920" class="w-full h-full object-cover" alt="Honda Hero">
                     </video>
                 </div>
                 <div class="relative z-10 container mx-auto px-4 text-white">
@@ -118,7 +121,7 @@
                 </div>
             </section>
 
-            <!-- Professional Services Section (Replaces Trending) -->
+            <!-- Professional Services Section -->
             <section class="py-20 bg-white relative -mt-16 z-20">
                 <div class="container mx-auto px-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -191,52 +194,25 @@
             </section>
         </div>
 
-        <!-- MOTORCYCLES VIEW -->
+        <!-- DYNAMIC VIEWS (Content populated by JS) -->
         <div id="view-motorcycles" class="view-section hidden py-16 page-enter">
-            <div class="bg-honda-dark py-12 mb-12">
-                <div class="container mx-auto px-4 text-center">
-                    <h1 class="text-4xl font-display font-bold text-white mb-2">MOTORCYCLES</h1>
-                    <p class="text-gray-400">Discover the perfect Honda motorcycle for your journey.</p>
-                </div>
-            </div>
-            <div class="container mx-auto px-4 md:px-8">
-                <div id="motorcycle-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
-            </div>
+            <div class="bg-honda-dark py-12 mb-12"><div class="container mx-auto px-4 text-center"><h1 class="text-4xl font-display font-bold text-white mb-2">MOTORCYCLES</h1><p class="text-gray-400">Discover the perfect Honda motorcycle for your journey.</p></div></div>
+            <div class="container mx-auto px-4 md:px-8"><div id="motorcycle-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div></div>
         </div>
-
-        <!-- SCOOTERS VIEW -->
         <div id="view-scooters" class="view-section hidden py-16 page-enter">
-            <div class="bg-honda-dark py-12 mb-12">
-                <div class="container mx-auto px-4 text-center">
-                    <h1 class="text-4xl font-display font-bold text-white mb-2">SCOOTERS</h1>
-                    <p class="text-gray-400">Ride with comfort and style.</p>
-                </div>
-            </div>
-            <div class="container mx-auto px-4 md:px-8">
-                <div id="scooter-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
-            </div>
+            <div class="bg-honda-dark py-12 mb-12"><div class="container mx-auto px-4 text-center"><h1 class="text-4xl font-display font-bold text-white mb-2">SCOOTERS</h1><p class="text-gray-400">Ride with comfort and style.</p></div></div>
+            <div class="container mx-auto px-4 md:px-8"><div id="scooter-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div></div>
         </div>
-
-        <!-- DEALER NETWORK VIEW -->
-        <div id="view-dealer" class="view-section hidden py-20 bg-white page-enter">
-            <div class="container mx-auto px-4 max-w-6xl">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl font-display font-bold text-gray-900">OUR <span class="text-honda-red">NETWORK</span></h2>
-                    <p class="text-gray-500 mt-2">Authorized sales and service partners across the region.</p>
-                </div>
-                <div id="dealers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
-            </div>
-        </div>
-
-        <!-- VIEW: OFFERS -->
+        
         <div id="view-offers" class="view-section hidden py-20 bg-gray-50 page-enter">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl font-display font-bold text-gray-900 mb-12">EXCLUSIVE <span class="text-honda-red">OFFERS</span></h2>
-                <div id="offers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"></div>
-            </div>
+            <div class="container mx-auto px-4"><h2 class="text-3xl font-display font-bold text-gray-900 mb-12 text-center">EXCLUSIVE <span class="text-honda-red">OFFERS</span></h2><div id="offers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"></div></div>
         </div>
-
-        <!-- VIEW: SERVICES -->
+        
+        <div id="view-dealer" class="view-section hidden py-20 bg-white page-enter">
+             <div class="container mx-auto px-4 max-w-6xl"><h2 class="text-3xl font-display font-bold text-gray-900 text-center mb-12">OUR <span class="text-honda-red">NETWORK</span></h2><div id="dealers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div></div>
+        </div>
+        
+        <!-- Service Views -->
         <div id="view-service-shield" class="view-section hidden py-20 bg-gray-50 page-enter">
             <div class="container mx-auto px-4 max-w-6xl">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -250,9 +226,7 @@
                         </ul>
                         <button onclick="openEnquiryModal('Service Booking')" class="bg-honda-red text-white px-8 py-3 rounded font-bold shadow-lg hover:bg-red-700 transition">Enquire Now</button>
                     </div>
-                    <div class="bg-white p-8 rounded-2xl shadow-xl">
-                        <img id="img-service-shield" src="image_cc5b9e.jpg" class="w-full rounded-lg" alt="Shield">
-                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-xl"><img id="img-service-shield" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Honda+Shield+Graphic" class="w-full rounded-lg" alt="Shield"></div>
                 </div>
             </div>
         </div>
@@ -261,9 +235,7 @@
             <div class="container mx-auto px-4 text-center max-w-3xl">
                 <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">GENUINE <span class="text-honda-red">OIL</span></h2>
                 <p class="text-lg text-gray-600 mb-8">Keep your engine young and powerful. Honda Genuine Oil (10W30 MA) is specifically formulated for high-performance Honda engines.</p>
-                <div class="mb-8 max-w-md mx-auto">
-                    <img id="img-service-oil" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Oil" class="w-full rounded-lg shadow-md" alt="Engine Oil">
-                </div>
+                <div class="mb-8 max-w-md mx-auto"><img id="img-service-oil" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Oil" class="w-full rounded-lg shadow-md" alt="Engine Oil"></div>
                 <button onclick="openEnquiryModal('Service Booking')" class="bg-gray-900 text-white px-8 py-3 rounded font-bold hover:bg-black transition">Order Now</button>
             </div>
         </div>
@@ -272,9 +244,7 @@
             <div class="container mx-auto px-4 text-center max-w-3xl">
                 <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">GENUINE <span class="text-honda-red">PARTS</span></h2>
                 <p class="text-lg text-gray-600 mb-8">Don't compromise on safety. Use only 100% Honda Genuine Parts designed to fit perfectly and last longer.</p>
-                <div class="mb-8 max-w-md mx-auto">
-                    <img id="img-service-parts" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Parts" class="w-full rounded-lg shadow-md" alt="Genuine Parts">
-                </div>
+                <div class="mb-8 max-w-md mx-auto"><img id="img-service-parts" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Parts" class="w-full rounded-lg shadow-md" alt="Genuine Parts"></div>
                 <button onclick="openEnquiryModal('Service Booking')" class="bg-gray-900 text-white px-8 py-3 rounded font-bold hover:bg-black transition">Enquire Parts</button>
             </div>
         </div>
