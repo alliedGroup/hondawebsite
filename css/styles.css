@@ -1,47 +1,74 @@
-/* Custom Utilities */
-body { 
-    font-family: 'Inter', sans-serif; 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
-/* Nav Link Hover Effect (Red Underline) */
-.nav-link { 
-    position: relative; 
+/* Page Transitions */
+.page-enter {
+    animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Navigation Links - Underline Effect */
+.nav-link {
+    position: relative;
+}
+
 .nav-link::after {
-    content: ''; 
-    position: absolute; 
-    width: 0; 
-    height: 2px; 
-    bottom: -4px; 
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
     left: 0;
-    background-color: #CC0000; 
+    background-color: #CC0000;
     transition: width 0.3s;
 }
-.nav-link:hover::after { 
-    width: 100%; 
-}
-.active-nav::after { 
-    width: 100%; 
+
+.nav-link:hover::after {
+    width: 100%;
 }
 
-/* Hide scrollbar for clean horizontal scroll if needed */
-.no-scrollbar::-webkit-scrollbar { 
-    display: none; 
+/* Utilities */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
 }
-.no-scrollbar { 
-    -ms-overflow-style: none; 
-    scrollbar-width: none; 
-}
-
-/* Loading Screen */
-#loader {
-    position: fixed; 
-    inset: 0; 
-    background: white; 
-    z-index: 50;
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    transition: opacity 0.5s ease;
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
+/* Variant Selection Styling */
+.variant-btn {
+    transition: all 0.2s;
+    border: 1px solid #e5e7eb;
+}
+.variant-btn:hover {
+    border-color: #CC0000;
+    color: #CC0000;
+}
+.variant-btn.active {
+    background-color: #CC0000;
+    color: white;
+    border-color: #CC0000;
+}

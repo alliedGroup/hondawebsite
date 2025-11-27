@@ -1,274 +1,130 @@
-const GOOGLE_SCRIPT_URL = "PASTE_YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE";
+// ============================================================
+// 🚀 CONNECT YOUR GOOGLE SHEET
+// Paste your "Web App URL" inside the quotes below.
+// ============================================================
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzFbN2h_5feZzq-LHUNZMdUIWb4eGRhS18qQWjEBlkobHBpVS3tq9xOKu21gVMfJAk_/exec";
 
 // ============================================================
-// DEFAULT DATA (Fallback)
+// STATE (Starts Empty - Populates ONLY from Sheet)
 // ============================================================
 let appData = {
-    config: {
-        hero_video_url: "https://assets.mixkit.co/videos/preview/mixkit-motorcycle-racer-riding-fast-on-a-highway-33952-large.mp4",
-        whatsapp_number: "919854092624",
-        facebook_url: "https://facebook.com",
-        instagram_url: "https://instagram.com",
-        youtube_url: "https://youtube.com",
-        twitter_url: "https://twitter.com",
-        linkedin_url: "https://linkedin.com"
-    },
-    services: [
-        { id: "shield", image_url: "https://placehold.co/600x400/f8f9fa/cc0000?text=Honda+Shield+Graphic" },
-        { id: "oil", image_url: "https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Oil" },
-        { id: "parts", image_url: "https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Parts" }
-    ],
-    offers: [
-        {
-            title: "Low Down Payment",
-            description: "Bring home your dream Honda with minimum down payment starting from just ₹3,999*. Easy documentation and quick approval.",
-            image_url: "https://placehold.co/800x400/CC0000/FFFFFF?text=Zero+Down+Payment",
-            type: "Finance"
-        },
-        {
-            title: "Student Special Offer",
-            description: "Exclusive cashback of up to ₹5,000* for students. Valid on showing a valid College/University ID card.",
-            image_url: "https://placehold.co/800x400/0000CC/FFFFFF?text=Student+Special",
-            type: "Special"
-        }
-    ],
-    dealers: [
-        {
-            name: "Ashangbam Honda",
-            location: "Chingya Leikai, Fulertal, Dist.- Cachar",
-            image_url: "https://placehold.co/150x150/png?text=Ashangbam",
-            sales_contact: "9435627287",
-            service_contact: "6000732287",
-            email: "arautomobileft@gmail.com"
-        },
-        {
-            name: "Lovnish Honda",
-            location: "Patharkandi Road, Kanisail, Karimganj",
-            image_url: "https://placehold.co/150x150/png?text=Lovnish",
-            sales_contact: "9716169455",
-            service_contact: "9401393100",
-            email: "barakhonda.kmj@gmail.com"
-        },
-        {
-            name: "B K Motors",
-            location: "Madhumala, Patharkandi",
-            image_url: "https://placehold.co/150x150/png?text=BK+Motors",
-            sales_contact: "", 
-            service_contact: "9101992269",
-            email: "bkmotors69@gmail.com"
-        },
-        {
-            name: "HKD Honda",
-            location: "College Road, Hailakandi",
-            image_url: "https://placehold.co/150x150/png?text=HKD+Honda",
-            sales_contact: "8011206913",
-            service_contact: "",
-            email: "hkdhonda2023@gmail.com"
-        }
-    ],
-    products: [
-        // MOTORCYCLES
-        {
-            id: "hornet20",
-            name: "Hornet 2.0",
-            type: "Motorcycle",
-            price: "1,39,000*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Hornet2.0/Hornet2.0-home-banner-m.png",
-            variants: [
-                { name: "Standard (OBD-2B)", price: "1,39,000*" },
-                { name: "Repsol Edition (OBD-2B)", price: "1,40,000*" }
-            ],
-            colors: [
-                { name: "Matte Sangria Red", img: "https://placehold.co/400x300/red/white?text=Hornet+Red" },
-                { name: "Matte Marvel Blue", img: "https://placehold.co/400x300/blue/white?text=Hornet+Blue" },
-                { name: "Matte Axis Grey", img: "https://placehold.co/400x300/grey/white?text=Hornet+Grey" },
-                { name: "Pearl Igneous Black", img: "https://placehold.co/400x300/black/white?text=Hornet+Black" }
-            ]
-        },
-        {
-            id: "sp125",
-            name: "SP 125",
-            type: "Motorcycle",
-            price: "86,017*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/SP125/sp125-home-banner-m.png",
-            variants: [
-                { name: "Drum (OBD-2B)", price: "86,017*" },
-                { name: "Disc (OBD-2B)", price: "90,017*" },
-                { name: "Sports Edition", price: "90,567*" }
-            ],
-            colors: [
-                { name: "Black", img: "" }, { name: "Matte Axis Grey", img: "" }, 
-                { name: "Imperial Red", img: "" }, { name: "Pearl Siren Blue", img: "" }, 
-                { name: "Decent Blue", img: "" }
-            ]
-        },
-        {
-            id: "shine125",
-            name: "Shine 125",
-            type: "Motorcycle",
-            price: "79,800*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Shine/shine-home-banner-m.png",
-            variants: [
-                { name: "Drum", price: "79,800*" }, { name: "Disc", price: "83,800*" }, { name: "Celebration", price: "84,500*" }
-            ],
-            colors: [
-                { name: "Black", img: "" }, { name: "Geny Grey", img: "" }, 
-                { name: "Rebel Red", img: "" }, { name: "Matte Axis Grey", img: "" }
-            ]
-        },
-        {
-            id: "unicorn",
-            name: "Unicorn",
-            type: "Motorcycle",
-            price: "1,09,800*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Unicorn/unicorn-home-banner-m.png",
-            variants: [{ name: "Standard", price: "1,09,800*" }],
-            colors: [
-                { name: "Pearl Igneous Black", img: "" }, { name: "Imperial Red Metallic", img: "" }, { name: "Matte Axis Gray", img: "" }
-            ]
-        },
-        {
-            id: "sp160",
-            name: "SP 160",
-            type: "Motorcycle",
-            price: "1,17,500*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/SP160/sp160-home-banner-m.png",
-            variants: [
-                { name: "Single Disc", price: "1,17,500*" }, { name: "Double Disc", price: "1,21,900*" }
-            ],
-            colors: [
-                { name: "Matte Marvel Blue", img: "" }, { name: "Matte Dark Blue", img: "" }, { name: "Pearl Spartan Red", img: "" }
-            ]
-        },
-        {
-            id: "cd110",
-            name: "CD 110 Dream",
-            type: "Motorcycle",
-            price: "73,400*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/CD110/CD110-home-banner-m.png",
-            variants: [{ name: "Standard", price: "73,400*" }],
-            colors: [
-                { name: "Black with Gold", img: "" }, { name: "Black with Blue", img: "" }, { name: "Black with Red", img: "" }
-            ]
-        },
-        {
-            id: "livo",
-            name: "Livo",
-            type: "Motorcycle",
-            price: "78,500*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Livo/Livo-home-banner-m.png",
-            variants: [
-                { name: "Drum", price: "78,500*" }, { name: "Disc", price: "82,500*" }
-            ],
-            colors: [
-                { name: "Athletic Blue", img: "" }, { name: "Matte Crust", img: "" }, { name: "Black", img: "" }
-            ]
-        },
-        {
-            id: "xblade",
-            name: "X-Blade",
-            type: "Motorcycle",
-            price: "1,21,313*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/XBlade/XBlade-home-banner-m.png",
-            variants: [
-                { name: "Single Disc", price: "1,21,313*" }, { name: "Double Disc", price: "1,25,703*" }
-            ],
-            colors: [
-                { name: "Spartan Red", img: "" }, { name: "Matte Marvel Blue", img: "" }, { name: "Matte Steel Black", img: "" }
-            ]
-        },
-
-        // SCOOTERS
-        {
-            id: "activa6g",
-            name: "Activa 6G",
-            type: "Scooter",
-            price: "76,234*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Activa/Activa-home-banner-m.png",
-            variants: [
-                { name: "Standard", price: "76,234*" }, { name: "Deluxe", price: "78,734*" }, { name: "H-Smart", price: "82,234*" }
-            ],
-            colors: [
-                { name: "Pearl Precious White", img: "" }, { name: "Decent Blue", img: "" }, { name: "Rebel Red", img: "" }, { name: "Matte Axis Grey", img: "" }, { name: "Black", img: "" }
-            ]
-        },
-        {
-            id: "activa125",
-            name: "Activa 125",
-            type: "Scooter",
-            price: "79,806*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Activa125/Activa125-home-banner-m.png",
-            variants: [
-                { name: "Drum", price: "79,806*" }, { name: "Drum Alloy", price: "83,474*" }, { name: "Disc", price: "86,979*" }, { name: "H-Smart", price: "88,979*" }
-            ],
-            colors: [
-                { name: "Pearl Night Star Black", img: "" }, { name: "Heavy Grey", img: "" }, { name: "Rebel Red", img: "" }, { name: "Pearl White", img: "" }
-            ]
-        },
-        {
-            id: "dio",
-            name: "Dio",
-            type: "Scooter",
-            price: "70,211*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Dio/Dio-home-banner-m.png",
-            variants: [
-                { name: "Standard", price: "70,211*" }, { name: "Deluxe", price: "74,212*" }, { name: "H-Smart", price: "77,712*" }
-            ],
-            colors: [
-                { name: "Sports Red", img: "" }, { name: "Jazzy Blue", img: "" }, { name: "Matte Axis Grey", img: "" }, { name: "Dazzle Yellow", img: "" }
-            ]
-        },
-        {
-            id: "dio125",
-            name: "Dio 125",
-            type: "Scooter",
-            price: "83,400*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Dio125/dio125-home-banner-m.png",
-            variants: [
-                { name: "Standard", price: "83,400*" }, { name: "Smart", price: "91,300*" }
-            ],
-            colors: [
-                { name: "Pearl Siren Blue", img: "" }, { name: "Pearl Deep Ground Grey", img: "" }, { name: "Pearl Night Star Black", img: "" }, { name: "Matte Marvel Blue", img: "" }
-            ]
-        },
-        {
-            id: "grazia125",
-            name: "Grazia 125",
-            type: "Scooter",
-            price: "82,520*",
-            image_url: "https://www.honda2wheelersindia.com/assets/images/Grazia/Grazia-home-banner-m.png",
-            variants: [
-                { name: "Drum", price: "82,520*" }, { name: "Disc", price: "89,845*" }, { name: "Sports Edition", price: "90,845*" }
-            ],
-            colors: [
-                { name: "Matte Axis Grey", img: "" }, { name: "Matte Marvel Blue", img: "" }, { name: "Pearl Night Star Black", img: "" }, { name: "Sports Red", img: "" }
-            ]
-        }
-    ]
+    config: {},
+    services: [],
+    offers: [],
+    dealers: [],
+    products: []
 };
+
+// ============================================================
+// HELPER: FIX GOOGLE DRIVE LINKS
+// Automatically converts "view" links to "direct image" links
+// ============================================================
+function getDirectImage(url) {
+    if (!url) return "https://placehold.co/400x300?text=No+Image";
+    
+    // Check if it's a Google Drive View Link
+    if (url.includes("drive.google.com") && url.includes("/view")) {
+        // Extract the ID
+        const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (idMatch && idMatch[1]) {
+            return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+        }
+    }
+    return url;
+}
 
 // ============================================================
 // INITIALIZATION
 // ============================================================
 async function init() {
-    // 1. RENDER IMMEDIATELY with defaults
-    renderAllSections();
+    // 1. Show Loading State
+    showLoadingState();
 
-    // 2. FETCH FROM GOOGLE SHEET (Silent Update)
+    // 2. Fetch from Google Sheet
     if (!GOOGLE_SCRIPT_URL.includes("PASTE_YOUR")) {
         try {
             const response = await fetch(GOOGLE_SCRIPT_URL);
             const remoteData = await response.json();
             
-            if (remoteData && remoteData.products && remoteData.products.length > 0) {
-                console.log("Updated from Sheet");
+            if (remoteData) {
+                console.log("Connected to Google Sheet");
+                
+                // Merge "Wide" Specs into Products
+                if (remoteData.specs && remoteData.products) {
+                    remoteData.products = mergeSpecsIntoProducts(remoteData.products, remoteData.specs);
+                }
+
+                // Update App Data & Render
                 appData = remoteData;
                 renderAllSections();
             }
         } catch (e) {
-            console.log("Using default local data");
+            console.error("Error fetching data:", e);
+            showErrorState();
         }
+    } else {
+        console.warn("Google Script URL is missing.");
     }
+}
+
+function showLoadingState() {
+    const loadingHTML = `
+        <div class="col-span-full text-center py-20">
+            <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-honda-red mx-auto mb-3"></div>
+            <p class="text-gray-400 text-sm">Loading details...</p>
+        </div>`;
+    
+    const ids = ['motorcycle-grid', 'scooter-grid', 'offers-grid', 'dealers-grid'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = loadingHTML;
+    });
+}
+
+function showErrorState() {
+    const errorHTML = `<p class="col-span-full text-center py-10 text-red-500">Unable to load content. Please refresh.</p>`;
+    const ids = ['motorcycle-grid', 'scooter-grid'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = errorHTML;
+    });
+}
+
+// --- HELPER: PARSE SHEET SPECS ---
+function mergeSpecsIntoProducts(products, rawSpecs) {
+    return products.map(p => {
+        // Find the row in 'Specs' tab where product_id matches
+        // Using loose equality (==) to handle string/number mismatch
+        const pSpecs = rawSpecs.find(s => s.product_id == p.id); 
+        
+        if (!pSpecs) return p;
+
+        const processedSpecs = {};
+        const categories = {
+            "Body": "Body Dimensions",
+            "Engine": "Engine",
+            "Transmission": "Transmission",
+            "Tyres": "Tyres & Brakes",
+            "Frame": "Frame & Suspension",
+            "Electricals": "Electricals"
+        };
+
+        for (const [sheetKey, displayKey] of Object.entries(categories)) {
+            if (pSpecs[sheetKey]) {
+                // Split cell content by new line, then by colon
+                const lines = pSpecs[sheetKey].toString().split('\n');
+                processedSpecs[displayKey] = lines.map(line => {
+                    const parts = line.split(':');
+                    if (parts.length >= 2) {
+                        return { label: parts[0].trim(), value: parts.slice(1).join(':').trim() };
+                    }
+                    return null;
+                }).filter(item => item !== null);
+            }
+        }
+        
+        return { ...p, specs: processedSpecs };
+    });
 }
 
 function renderAllSections() {
@@ -285,10 +141,13 @@ function renderAllSections() {
 
 function renderHero() {
     const videoParent = document.getElementById('hero-video');
-    if (videoParent && appData.config.hero_video_url) {
+    if (videoParent && appData.config && appData.config.hero_video_url) {
         const currentSrc = videoParent.querySelector('source') ? videoParent.querySelector('source').src : '';
-        if (currentSrc !== appData.config.hero_video_url) {
-             videoParent.innerHTML = `<source src="${appData.config.hero_video_url}" type="video/mp4">`;
+        // Use helper to fix drive links if user put one there
+        const videoUrl = getDirectImage(appData.config.hero_video_url).replace('&export=view','&export=download'); // Video needs download link often
+        
+        if (currentSrc !== videoUrl) {
+             videoParent.innerHTML = `<source src="${videoUrl}" type="video/mp4">`;
              videoParent.load();
         }
     }
@@ -296,7 +155,7 @@ function renderHero() {
 
 function renderSocials() {
     const waLink = document.getElementById('wa-link');
-    if(waLink && appData.config.whatsapp_number) {
+    if(waLink && appData.config && appData.config.whatsapp_number) {
         waLink.href = `https://wa.me/${appData.config.whatsapp_number}`;
     }
 
@@ -309,7 +168,7 @@ function renderSocials() {
     };
 
     const container = document.getElementById('social-links-container');
-    if(container) {
+    if(container && appData.config) {
         let html = '';
         for (const [key, icon] of Object.entries(socialMap)) {
             if(appData.config[key]) {
@@ -323,8 +182,8 @@ function renderSocials() {
 function renderServiceImages() {
     if (!appData.services) return;
     appData.services.forEach(s => {
-        const img = document.getElementById(`img-service-${s.id}`);
-        if(img && s.image_url) img.src = s.image_url;
+        const img = document.getElementById(`img-service-${s.service_id || s.id}`);
+        if(img && s.image_url) img.src = getDirectImage(s.image_url);
     });
 }
 
@@ -332,10 +191,15 @@ function renderOffers() {
     const container = document.getElementById('offers-grid');
     if (!container) return;
     
+    if (!appData.offers || appData.offers.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-400 col-span-full">No offers available at the moment.</p>';
+        return;
+    }
+
     container.innerHTML = appData.offers.map(offer => `
         <div onclick="openEnquiryModal('${offer.type || 'Offer'}: ${offer.title}')" class="bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition duration-300 flex flex-col cursor-pointer h-full">
             <div class="relative h-56 overflow-hidden">
-                <img src="${offer.image_url || 'https://placehold.co/800x400?text=Offer'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${offer.title}">
+                <img src="${getDirectImage(offer.image_url)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${offer.title}">
                 <div class="absolute top-4 left-4 bg-honda-red text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Limited Time</div>
             </div>
             <div class="p-6 flex-grow flex flex-col">
@@ -352,19 +216,24 @@ function renderOffers() {
 function renderDealers() {
     const container = document.getElementById('dealers-grid');
     if (!container) return;
+    
+    if (!appData.dealers || appData.dealers.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-400 col-span-full">Network details loading...</p>';
+        return;
+    }
 
     container.innerHTML = appData.dealers.map(dealer => `
         <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl transition flex flex-col sm:flex-row gap-6 group">
             <div class="w-full sm:w-32 h-32 bg-gray-50 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
-                <img src="${dealer.image_url || 'https://placehold.co/150x150?text=Dealer'}" class="w-full h-full object-cover" alt="${dealer.name}">
+                <img src="${getDirectImage(dealer.image_url)}" class="w-full h-full object-cover" alt="${dealer.name}">
             </div>
             <div class="flex-grow">
                 <h3 class="text-xl font-bold text-gray-900 mb-1">${dealer.name}</h3>
                 <p class="text-sm text-gray-500 mb-4"><i class="fas fa-map-marker-alt text-honda-red mr-1"></i> ${dealer.location}</p>
                 <div class="space-y-1 text-sm text-gray-600">
-                    ${dealer.sales_contact ? `<p class="flex justify-between"><span class="font-bold text-xs text-gray-400 tracking-wide">SALES:</span> <a href="tel:${dealer.sales_contact}" class="text-gray-800 hover:text-honda-red font-medium">${dealer.sales_contact}</a></p>` : ''}
-                    ${dealer.service_contact ? `<p class="flex justify-between"><span class="font-bold text-xs text-gray-400 tracking-wide">SERVICE:</span> <a href="tel:${dealer.service_contact}" class="text-gray-800 hover:text-honda-red font-medium">${dealer.service_contact}</a></p>` : ''}
-                    ${dealer.email ? `<p class="flex justify-between"><span class="font-bold text-xs text-gray-400 tracking-wide">EMAIL:</span> <a href="mailto:${dealer.email}" class="text-honda-red hover:underline truncate ml-2">${dealer.email}</a></p>` : ''}
+                    ${dealer.sales_contact ? `<p class="flex justify-between"><span class="font-bold text-xs text-gray-400 tracking-wide w-16 inline-block">SALES:</span> <a href="tel:${dealer.sales_contact}" class="text-gray-800 hover:text-honda-red font-medium">${dealer.sales_contact}</a></p>` : ''}
+                    ${dealer.service_contact ? `<p class="flex justify-between"><span class="font-bold text-xs text-gray-400 tracking-wide w-16 inline-block">SERVICE:</span> <a href="tel:${dealer.service_contact}" class="text-gray-800 hover:text-honda-red font-medium">${dealer.service_contact}</a></p>` : ''}
+                    ${dealer.email ? `<p class="flex justify-between"><span class="font-bold text-xs text-gray-400 tracking-wide w-16 inline-block">EMAIL:</span> <a href="mailto:${dealer.email}" class="text-honda-red hover:underline truncate ml-2">${dealer.email}</a></p>` : ''}
                 </div>
             </div>
         </div>
@@ -374,25 +243,22 @@ function renderDealers() {
 function renderProducts() {
     const motoContainer = document.getElementById('motorcycle-grid');
     const scooterContainer = document.getElementById('scooter-grid');
-    const featuredContainer = document.getElementById('featured-grid');
 
     if (motoContainer) motoContainer.innerHTML = '';
     if (scooterContainer) scooterContainer.innerHTML = '';
-    if (featuredContainer) featuredContainer.innerHTML = '';
+    
+    if (!appData.products || appData.products.length === 0) return;
 
     const motorcycles = appData.products.filter(p => p.type.toLowerCase().includes('motorcycle'));
     motorcycles.forEach(p => { if (motoContainer) motoContainer.innerHTML += createCardHTML(p); });
 
     const scooters = appData.products.filter(p => p.type.toLowerCase().includes('scooter'));
     scooters.forEach(p => { if (scooterContainer) scooterContainer.innerHTML += createCardHTML(p); });
-
-    if (featuredContainer && appData.products.length > 0) {
-        featuredContainer.innerHTML = appData.products.slice(0, 4).map(p => createCardHTML(p)).join('');
-    }
 }
 
 function createCardHTML(p) {
-    const imgUrl = (p.image_url && p.image_url !== "") ? p.image_url : `https://placehold.co/400x300?text=${p.name}`;
+    // Use the fixer for product images too
+    const imgUrl = getDirectImage(p.image_url);
     const displayPrice = p.price ? `₹ ${p.price}` : "Check Price";
 
     return `
@@ -471,12 +337,14 @@ function populateModelDropdown() {
     const modelSelect = document.getElementById('modal-model');
     if (!modelSelect) return;
     modelSelect.innerHTML = '<option value="" disabled selected>Select Model</option>';
-    appData.products.forEach(p => {
-        const option = document.createElement('option');
-        option.value = p.name;
-        option.innerText = p.name;
-        modelSelect.appendChild(option);
-    });
+    if(appData.products) {
+        appData.products.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.name;
+            option.innerText = p.name;
+            modelSelect.appendChild(option);
+        });
+    }
 }
 
 function openModal(id) {
@@ -484,35 +352,72 @@ function openModal(id) {
     if(!p) return;
     
     document.getElementById('modal-title').innerText = p.name;
+    
     let basePrice = p.price;
-    if(p.variants && p.variants.length > 0) basePrice = p.variants[0].price;
+    let baseBrochure = p.brochure;
+    if(p.variants && p.variants.length > 0) {
+        basePrice = p.variants[0].price;
+        baseBrochure = p.variants[0].brochure;
+    }
     document.getElementById('modal-price').innerText = 'Ex-Showroom: ₹ ' + basePrice.replace('*','');
     
+    const brochureLink = document.getElementById('modal-brochure');
+    if(brochureLink) {
+        if(baseBrochure && baseBrochure !== "#") {
+            brochureLink.href = baseBrochure;
+            brochureLink.classList.remove('hidden');
+        } else { brochureLink.classList.add('hidden'); }
+    }
+    
     const modalImg = document.getElementById('modal-img');
-    modalImg.src = p.image_url || `https://placehold.co/400x300?text=${p.name}`;
+    modalImg.src = getDirectImage(p.image_url); // Fix preview
     modalImg.onclick = function() { openLightbox(this.src); };
     
+    // Variants
     const variantsList = document.getElementById('modal-variants');
     if(variantsList) {
         if (p.variants && p.variants.length > 0) {
             variantsList.innerHTML = p.variants.map((v, index) => 
-                `<button onclick="selectVariant(this, '${v.price}')" class="variant-btn px-3 py-1 rounded text-xs font-medium text-gray-700 border border-gray-200 hover:border-honda-red hover:text-honda-red transition ${index === 0 ? 'active bg-honda-red text-white border-honda-red' : ''}">${v.name}</button>`
+                `<button onclick="selectVariant(this, '${v.price}', '${v.brochure}')" class="variant-btn px-3 py-1 rounded text-xs font-medium text-gray-700 border border-gray-200 hover:border-honda-red hover:text-honda-red transition ${index === 0 ? 'active bg-honda-red text-white border-honda-red' : ''}">${v.name}</button>`
             ).join('');
-        } else { variantsList.innerHTML = '<span class="text-xs text-gray-400">Standard</span>'; }
+        } else { variantsList.innerHTML = '<span class="text-xs text-gray-400">Standard Variant</span>'; }
     }
 
+    // Colors
     const colorsList = document.getElementById('modal-colors');
     if(colorsList) {
         if (p.colors && p.colors.length > 0) {
             colorsList.innerHTML = p.colors.map(c => `
-                <div onclick="changeModalImage('${c.img}')" class="cursor-pointer group relative">
-                    <span class="block w-8 h-8 rounded-full border-2 border-white shadow-md hover:scale-110 transition ring-1 ring-gray-200" 
-                          style="background-color:${getColorHex(c.name)}" 
-                          title="${c.name}">
-                </span>
-            </div>
-        `).join('');
-        } else { colorsList.innerHTML = '<span class="text-xs text-gray-400">Standard</span>'; }
+                <div onclick="changeModalImage(this, '${c.img}')" class="cursor-pointer group relative rounded-full">
+                    <span class="block w-8 h-8 rounded-full border-2 border-white shadow-md hover:scale-110 transition ring-1 ring-gray-200 color-btn" style="background-color:${getColorHex(c.name)}" title="${c.name}"></span>
+                </div>`).join('');
+        } else { colorsList.innerHTML = '<span class="text-xs text-gray-400">Standard Colors</span>'; }
+    }
+
+    // Specs (Tabs)
+    const tabsContainer = document.getElementById('specs-tabs');
+    const contentContainer = document.getElementById('specs-content');
+    
+    if (tabsContainer && contentContainer) {
+        if (p.specs && Object.keys(p.specs).length > 0) {
+            tabsContainer.innerHTML = '';
+            const categories = Object.keys(p.specs);
+            categories.forEach((cat, index) => {
+                const btn = document.createElement('button');
+                btn.className = `px-4 py-2 text-sm font-medium whitespace-nowrap rounded-t-lg border-b-2 transition-colors ${index === 0 ? 'text-honda-red border-honda-red bg-red-50' : 'text-gray-500 border-transparent hover:text-gray-700'}`;
+                btn.innerText = cat;
+                btn.onclick = () => {
+                    Array.from(tabsContainer.children).forEach(b => b.className = 'px-4 py-2 text-sm font-medium whitespace-nowrap rounded-t-lg border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-colors');
+                    btn.className = 'px-4 py-2 text-sm font-medium whitespace-nowrap rounded-t-lg border-b-2 border-honda-red text-honda-red bg-red-50 transition-colors';
+                    renderSpecContent(p.specs[cat]);
+                };
+                tabsContainer.appendChild(btn);
+            });
+            renderSpecContent(p.specs[categories[0]]);
+        } else {
+            tabsContainer.innerHTML = '';
+            contentContainer.innerHTML = '<p class="text-gray-400 text-center py-10 text-sm">Detailed specifications coming soon.</p>';
+        }
     }
     
     const bookBtn = document.getElementById('product-book-btn');
@@ -521,21 +426,44 @@ function openModal(id) {
     document.getElementById('product-modal').classList.remove('hidden');
 }
 
+function renderSpecContent(specsArray) {
+    const container = document.getElementById('specs-content');
+    let html = '<table class="w-full text-sm text-left text-gray-600"><tbody>';
+    specsArray.forEach((item, index) => {
+        const bgClass = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+        html += `<tr class="${bgClass} border-b border-gray-100 last:border-0"><td class="py-2 px-4 font-medium text-gray-900 w-1/2">${item.label}</td><td class="py-2 px-4 text-gray-600">${item.value}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
 function closeModal() { document.getElementById('product-modal').classList.add('hidden'); }
 
-function changeModalImage(imgUrl) {
-    if(imgUrl && imgUrl.startsWith('http')) {
+function changeModalImage(element, imgUrl) {
+    document.querySelectorAll('.color-btn').forEach(el => el.classList.remove('ring-offset-2', 'ring-2', 'ring-honda-red'));
+    if(element) {
+        const btn = element.querySelector('.color-btn') || element;
+        btn.classList.add('ring-offset-2', 'ring-2', 'ring-honda-red');
+    }
+    // Use fixer here too
+    const fixedUrl = getDirectImage(imgUrl);
+    if(fixedUrl && fixedUrl.startsWith('http')) {
         const img = document.getElementById('modal-img');
         img.style.opacity = '0.5';
-        img.src = imgUrl;
+        img.src = fixedUrl;
         setTimeout(() => img.style.opacity = '1', 200);
     }
 }
 
-function selectVariant(element, price) {
+function selectVariant(element, price, brochure) {
     document.querySelectorAll('.variant-btn').forEach(btn => btn.classList.remove('active', 'bg-honda-red', 'text-white', 'border-honda-red'));
     element.classList.add('active', 'bg-honda-red', 'text-white', 'border-honda-red');
-    if(price) document.getElementById('modal-price').innerText = 'Ex-Showroom: ₹ ' + price;
+    if(price) document.getElementById('modal-price').innerText = 'Ex-Showroom: ₹ ' + price.replace('*','');
+    if(brochure && brochure !== "#") {
+        const link = document.getElementById('modal-brochure');
+        link.href = brochure;
+        link.classList.remove('hidden');
+    }
 }
 
 function getColorHex(colorName) {
