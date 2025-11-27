@@ -29,8 +29,6 @@ function getDirectLink(url, isBrochure = false) {
 // ============================================================
 let appData = {
     config: {
-        // Set local video as default so it plays immediately
-        hero_video_url: "videos/play1home.mp4",
         whatsapp_number: "919854092624",
         facebook_url: "https://www.facebook.com", 
         instagram_url: "https://www.instagram.com"
@@ -45,13 +43,10 @@ let appData = {
 // INITIALIZATION
 // ============================================================
 async function init() {
-    // 1. Render the Hero (Video) immediately
-    renderHero();
-    
-    // 2. Show Loading State for content areas
+    // 1. Show Loading State for content areas
     showLoadingState();
 
-    // 3. Fetch from Google Sheet
+    // 2. Fetch from Google Sheet
     if (!GOOGLE_SCRIPT_URL.includes("PASTE_YOUR")) {
         try {
             const response = await fetch(GOOGLE_SCRIPT_URL);
@@ -75,10 +70,7 @@ async function init() {
                 }
 
                 // Update App Data & Render
-                // We merge carefully to keep the local video if sheet doesn't have one yet
-                const videoBackup = appData.config.hero_video_url;
                 appData = { ...appData, ...remoteData };
-                if (!appData.config.hero_video_url) appData.config.hero_video_url = videoBackup;
                 
                 renderAllSections();
             }
@@ -117,6 +109,8 @@ function showErrorState() {
 // --- HELPER: PARSE SHEET SPECS ---
 function mergeSpecsIntoProducts(products, rawSpecs) {
     return products.map(p => {
+        // Find the row in 'Specs' tab where product_id matches
+        // Using loose equality (==) to handle string/number mismatch
         const pSpecs = rawSpecs.find(s => s.product_id == p.id); 
         
         if (!pSpecs) return p;
@@ -149,7 +143,7 @@ function mergeSpecsIntoProducts(products, rawSpecs) {
 }
 
 function renderAllSections() {
-    renderHero();
+    // Note: renderHero() removed so it doesn't touch the HTML video
     renderSocials();
     renderProducts();
     renderOffers();
@@ -159,31 +153,6 @@ function renderAllSections() {
 }
 
 // --- RENDERERS ---
-
-function renderHero() {
-    const videoParent = document.getElementById('hero-video');
-    if (videoParent && appData.config && appData.config.hero_video_url) {
-        const currentSrc = videoParent.querySelector('source') ? videoParent.querySelector('source').src : '';
-        
-        let videoUrl = appData.config.hero_video_url;
-        if(videoUrl.includes('drive.google.com')) {
-            videoUrl = getDirectLink(videoUrl).replace('&export=view','&export=download'); 
-        }
-        
-        // Check if url is different (ignoring base path for local files)
-        if (!currentSrc.includes(videoUrl)) {
-             videoParent.innerHTML = `<source src="${videoUrl}" type="video/mp4">`;
-             videoParent.load();
-             // Force play
-             const playPromise = videoParent.play();
-             if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                  console.log("Auto-play was prevented");
-                });
-             }
-        }
-    }
-}
 
 function renderSocials() {
     const waLink = document.getElementById('wa-link');
@@ -224,11 +193,7 @@ function renderOffers() {
     if (!container) return;
     
     if (!appData.offers || appData.offers.length === 0) {
-        // Keep loading state or show empty message if explicitly empty
-        // We won't overwrite with empty message immediately if waiting for fetch
-        if (appData.offers && appData.offers.length === 0) {
-             container.innerHTML = '<p class="text-center text-gray-400 col-span-full">No offers available at the moment.</p>';
-        }
+        container.innerHTML = '<p class="text-center text-gray-400 col-span-full">No offers available at the moment.</p>';
         return;
     }
 
@@ -254,9 +219,7 @@ function renderDealers() {
     if (!container) return;
     
     if (!appData.dealers || appData.dealers.length === 0) {
-        if (appData.dealers && appData.dealers.length === 0) {
-             container.innerHTML = '<p class="text-center text-gray-400 col-span-full">No dealers found.</p>';
-        }
+        container.innerHTML = '<p class="text-center text-gray-400 col-span-full">Network details loading...</p>';
         return;
     }
 
