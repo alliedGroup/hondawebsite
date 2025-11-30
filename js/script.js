@@ -1,34 +1,37 @@
 // ============================================================
 // 🚀 CONFIGURATION
-// REPLACE THIS URL WITH YOUR NEW DEPLOYMENT URL FROM STEP 1
+// UPDATED WITH YOUR SPECIFIC DEPLOYMENT LINK
 // ============================================================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIZLKNlc630LlOGEfSybsFqpXKIXdCrAcst6XkOyNmB7mcLWAlDKQG611H_sFbbCtY/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuq4x96EW4iBsQEFxYc0k6QYORJUSKptqTwpLd3FE31pvwT-SR8m-yWIfv7T5ObRPe/exec";
 
 // ============================================================
-// HELPER: ROBUST GOOGLE DRIVE LINK FIXER
+// HELPER: DIRECT LINKS (Fixes "No Google Drive" UI)
 // ============================================================
 function getDirectLink(url, isBrochure = false) {
     if (!url || typeof url !== 'string' || url.trim() === "" || url === "#") {
         return isBrochure ? "#" : "https://placehold.co/600x400?text=No+Image";
     }
     
-    // Clean whitespace
     url = url.trim();
 
-    // 1. Handle Google Drive Links
-    if (url.includes("drive.google.com")) {
-        // Extract ID
+    // 1. Google Drive Links
+    if (url.includes("drive.google.com") || url.includes("docs.google.com")) {
         let id = null;
+        // Supports: /file/d/ID, ?id=ID, &id=ID
         const parts = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
         if (parts && parts[1]) {
             id = parts[1];
-            // If it's a PDF/Brochure, use 'export=view', otherwise use 'uc?export=view' for images
-            if (isBrochure) return `https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURIComponent(`https://drive.google.com/uc?id=${id}&export=download`)}`;
-            return `https://drive.google.com/uc?export=view&id=${id}`;
+            if (isBrochure) {
+                // FORCE DOWNLOAD for Brochures
+                return `https://drive.google.com/uc?export=download&id=${id}`;
+            }
+            // USE THUMBNAIL API (Faster & More Reliable for PNGs)
+            // sz=w1000 requests a high-quality 1000px wide image
+            return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
         }
     }
     
-    // 2. Handle YouTube Links (get Thumbnail)
+    // 2. YouTube Links
     if (url.includes("youtube.com") || url.includes("youtu.be")) {
         const videoId = getYouTubeId(url);
         return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : url;
@@ -44,119 +47,150 @@ function getYouTubeId(url) {
 }
 
 // ============================================================
-// STATE MANAGEMENT
+// APP STATE
 // ============================================================
 let appData = {
-    config: {
-        hero_video_url: "videos/play1home.mp4", 
-        whatsapp_number: "919854092624"
-    },
-    services: [],
-    offers: [],
-    dealers: [],
-    products: []
+    config: { hero_video_url: "videos/play1home.mp4", whatsapp_number: "919854092624" },
+    services: [], offers: [], dealers: [], products: []
 };
 
 // ============================================================
-// INITIALIZATION
+// INIT
 // ============================================================
 async function init() {
-    renderHero(); // Render default hero immediately
+    renderHero(); 
     showLoadingState();
 
     try {
-        console.log("Fetching data from:", GOOGLE_SCRIPT_URL);
+        // Add timestamp to prevent caching old data
+        const fetchUrl = `${GOOGLE_SCRIPT_URL}?v=${Date.now()}`;
+        console.log("Fetching fresh data from:", fetchUrl);
         
-        const response = await fetch(GOOGLE_SCRIPT_URL);
-        
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const remoteData = await response.json();
-        console.log("Data received:", remoteData);
+        const response = await fetch(fetchUrl);
+        const raw = await response.json();
+        console.log("Data Received:", raw);
 
-        if (remoteData) {
-            // Merge Data
-            if (remoteData.products && remoteData.specs) {
-                remoteData.products = mergeSpecsIntoProducts(remoteData.products, remoteData.specs);
-            }
+        if (raw) {
+            // MERGE LOGIC: Connects Specs sheet to Products
+            appData.products = (raw.products || []).map(p => {
+                const pId = standardizeId(p.product_id || p.id || p.code);
+                const pName = standardizeId(p.name);
+
+                // Find Variants
+                const variants = (raw.variants || []).filter(v => {
+                    const vId = standardizeId(v.product_id || v.id || v.product);
+                    return vId === pId || vId === pName;
+                }).map(v => ({
+                    name: v.variant_name || v.name || v.variant,
+                    price: v.variant_price || v.price,
+                    brochure: v.brochure_url || v.brochure
+                }));
+
+                // Find Colors - NOW CHECKS MORE COLUMN NAMES
+                const colors = (raw.colors || []).filter(c => {
+                    const cId = standardizeId(c.product_id || c.id || c.product);
+                    return cId === pId || cId === pName;
+                }).map(c => ({
+                    name: c.color_name || c.name || c.color,
+                    img: c.image_url || c.url || c.image || c.link || c.img
+                }));
+
+                // Find Specs
+                let pSpecs = (raw.specs || []).find(s => {
+                    const sId = standardizeId(s.product_id || s.id || s.model || s.product);
+                    return sId === pId || sId === pName;
+                });
+
+                // Helper to normalize the "Type" field (handles 'category', 'vehicle_type', etc)
+                let type = p.type || p.category || p.vehicle_type || "";
+                
+                // SUPER ROBUST Image Finder (Checks all possible column names)
+                let img = p.image_url || p.image || p.img || p.url || p.photo || p.link || "";
+                
+                // Trim strings to avoid hidden spaces breaking links
+                if(img && typeof img === 'string') img = img.trim();
+
+                // Fallback to first color image if main image is missing
+                if ((!img || img === "") && colors.length > 0) {
+                    img = colors[0].img;
+                }
+
+                return {
+                    ...p,
+                    type: type,
+                    variants: variants,
+                    colors: colors,
+                    specs: processSpecs(pSpecs),
+                    image_url: img
+                };
+            });
             
-            // Update State
-            appData.config = { ...appData.config, ...remoteData.config };
-            appData.products = remoteData.products || [];
-            appData.offers = remoteData.offers || [];
-            appData.dealers = remoteData.dealers || [];
-            appData.services = remoteData.services || [];
+            appData.services = raw.services || [];
+            appData.offers = raw.offers || [];
+            appData.dealers = raw.dealers || [];
+            
+            if(raw.config) {
+                appData.config = {};
+                raw.config.forEach(c => { if(c.key) appData.config[c.key] = c.value; });
+            }
 
-            // Re-render everything with new data
             renderAllSections();
         }
     } catch (e) {
-        console.error("CRITICAL ERROR FETCHING DATA:", e);
+        console.error("Data Load Error:", e);
         showErrorState();
     }
 }
 
+// --- DATA HELPERS ---
+
+function standardizeId(str) {
+    if (!str) return "";
+    return String(str).toLowerCase().replace(/[^a-z0-9]/g, ""); 
+}
+
+function processSpecs(specRow) {
+    if (!specRow) return {};
+    const processed = {};
+    const map = [
+        { labels: ["Body Dimensions", "Dimensions"], keys: ["body_dimensions", "body", "dimensions"] },
+        { labels: ["Engine"], keys: ["engine", "engine_spec"] },
+        { labels: ["Transmission"], keys: ["transmission", "gearbox", "clutch"] },
+        { labels: ["Tyres & Brakes"], keys: ["tyres_&_brakes", "tyres", "brakes", "wheels"] },
+        { labels: ["Frame & Suspension"], keys: ["frame_&_suspension", "frame", "suspension"] },
+        { labels: ["Electricals"], keys: ["electricals", "electrical", "battery", "lights"] }
+    ];
+
+    map.forEach(group => {
+        const validKey = group.keys.find(k => specRow[k]);
+        if (validKey) {
+            const lines = String(specRow[validKey]).split('\n');
+            processed[group.labels[0]] = lines.map(line => {
+                const parts = line.split(':');
+                if (parts.length >= 2) return { label: parts[0].trim(), value: parts.slice(1).join(':').trim() };
+                if (line.trim()) return { label: "Feature", value: line.trim() };
+                return null;
+            }).filter(x => x);
+        }
+    });
+    return processed;
+}
+
+// ============================================================
+// UI RENDERING
+// ============================================================
+
 function showLoadingState() {
-    const loadingHTML = `
-        <div class="col-span-full text-center py-20">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-honda-red mx-auto mb-4"></div>
-            <p class="text-gray-500 font-medium">Loading showroom data...</p>
-        </div>`;
-    
+    const loadingHTML = `<div class="col-span-full text-center py-20"><div class="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-honda-red mx-auto mb-3"></div><p class="text-gray-400">Loading live data...</p></div>`;
     ['motorcycle-grid', 'scooter-grid', 'offers-grid', 'dealers-grid'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.innerHTML = loadingHTML;
+        const el = document.getElementById(id); if(el) el.innerHTML = loadingHTML;
     });
 }
 
 function showErrorState() {
-    const errorHTML = `
-        <div class="col-span-full text-center py-10 bg-red-50 rounded-lg border border-red-100 p-8">
-            <i class="fas fa-wifi text-red-400 text-3xl mb-3"></i>
-            <p class="text-gray-800 font-bold">Connection Issue</p>
-            <p class="text-gray-500 text-sm">We couldn't load the latest data. Please refresh the page.</p>
-            <button onclick="window.location.reload()" class="mt-4 px-4 py-2 bg-white border border-gray-300 rounded text-sm hover:bg-gray-50">Retry</button>
-        </div>`;
-    
+    const errorHTML = `<div class="col-span-full text-center py-10 text-red-500 font-medium">Failed to load data. Please check your internet connection.</div>`;
     ['motorcycle-grid', 'scooter-grid', 'offers-grid', 'dealers-grid'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.innerHTML = errorHTML;
-    });
-}
-
-// --- DATA PROCESSING ---
-function mergeSpecsIntoProducts(products, rawSpecs) {
-    if(!rawSpecs) return products;
-    return products.map(p => {
-        // Find all specs rows for this product ID
-        const pSpecs = rawSpecs.find(s => String(s.product_id) === String(p.id));
-        if (!pSpecs) return p;
-
-        const processedSpecs = {};
-        // Map Google Sheet columns to Display Categories
-        const categories = {
-            "body": "Body Dimensions", 
-            "engine": "Engine", 
-            "transmission": "Transmission",
-            "tyres": "Tyres & Brakes", 
-            "frame": "Frame & Suspension", 
-            "electricals": "Electricals"
-        };
-
-        for (const [key, label] of Object.entries(categories)) {
-            if (pSpecs[key]) {
-                // Split new lines into array items
-                const lines = String(pSpecs[key]).split('\n');
-                processedSpecs[label] = lines.map(line => {
-                    const parts = line.split(':');
-                    if (parts.length >= 2) {
-                        return { label: parts[0].trim(), value: parts.slice(1).join(':').trim() };
-                    }
-                    return null;
-                }).filter(i => i);
-            }
-        }
-        return { ...p, specs: processedSpecs };
+        const el = document.getElementById(id); if(el) el.innerHTML = errorHTML;
     });
 }
 
@@ -167,130 +201,27 @@ function renderAllSections() {
     renderOffers();
     renderDealers();
     renderServiceImages();
+    // renderDepartments(); <-- REMOVED as it's now in HTML
     populateModelDropdown();
 }
-
-// --- RENDERERS ---
 
 function renderHero() {
     const container = document.getElementById('hero-media-container');
     if (!container) return;
-
     let videoUrl = appData.config.hero_video_url;
-    
-    // Check if it's a YouTube video
     const youtubeId = getYouTubeId(videoUrl);
 
     if (youtubeId) {
-        // Embed YouTube
-        container.innerHTML = `<iframe class="w-full h-full object-cover pointer-events-none scale-125" 
-            src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
-            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        container.innerHTML = `<iframe class="w-full h-full object-cover pointer-events-none scale-125" src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     } else {
-        // HTML5 Video (Local or Direct Drive Link)
-        if (videoUrl.includes('drive.google.com')) {
-            // Convert view link to download link for HTML5 video tag
+        if (videoUrl && videoUrl.includes('drive.google.com')) {
             const idMatch = videoUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
             if(idMatch) videoUrl = `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
         }
-        
-        container.innerHTML = `
-            <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-60">
-                <source src="${videoUrl}" type="video/mp4">
-            </video>`;
-    }
-}
-
-function renderSocials() {
-    const waLink = document.getElementById('wa-link');
-    if(waLink && appData.config.whatsapp_number) {
-        waLink.href = `https://wa.me/${appData.config.whatsapp_number}`;
-    }
-
-    const container = document.getElementById('social-links-container');
-    if(container && appData.config) {
-        const mapping = [
-            { key: 'facebook_url', icon: 'fa-facebook-f' },
-            { key: 'instagram_url', icon: 'fa-instagram' },
-            { key: 'youtube_url', icon: 'fa-youtube' },
-            { key: 'linkedin_url', icon: 'fa-linkedin-in' },
-            { key: 'twitter_url', icon: 'fa-x-twitter' }
-        ];
-
-        let html = mapping.map(m => {
-            if(appData.config[m.key]) {
-                return `<a href="${appData.config[m.key]}" target="_blank" class="text-gray-400 hover:text-white transition transform hover:scale-110"><i class="fab ${m.icon} text-lg"></i></a>`;
-            }
-            return '';
-        }).join('');
-        
-        if(html) container.innerHTML = html;
-    }
-}
-
-function renderServiceImages() {
-    appData.services.forEach(s => {
-        const id = s.id || s.service_id; // Handle loosely typed headers
-        if(!id) return;
-        const imgEl = document.getElementById(`img-service-${id.toLowerCase()}`);
-        if(imgEl && s.image_url) {
-            imgEl.src = getDirectLink(s.image_url);
+        if(videoUrl) {
+            container.innerHTML = `<video autoplay muted loop playsinline class="w-full h-full object-cover opacity-60"><source src="${videoUrl}" type="video/mp4"></video>`;
         }
-    });
-}
-
-function renderOffers() {
-    const container = document.getElementById('offers-grid');
-    if (!container) return;
-
-    if (appData.offers.length === 0) {
-        container.innerHTML = '<div class="col-span-full text-center text-gray-400">No active offers currently.</div>';
-        return;
     }
-
-    container.innerHTML = appData.offers.map(offer => {
-        const isFinance = (offer.type || '').toLowerCase().includes('finance');
-        const borderColor = isFinance ? 'border-honda-red' : 'border-blue-600';
-        const textColor = isFinance ? 'text-honda-red' : 'text-blue-600';
-        
-        return `
-        <div onclick="openEnquiryModal('${offer.type || 'Offer'}', '${offer.title}')" class="bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition duration-300 flex flex-col cursor-pointer border-t-4 ${borderColor}">
-            <div class="relative h-56 overflow-hidden bg-gray-50">
-                <img src="${getDirectLink(offer.image_url)}" class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-500">
-            </div>
-            <div class="p-6 flex-grow flex flex-col text-center">
-                <h3 class="text-xl font-display font-bold text-gray-900 mb-2">${offer.title}</h3>
-                <p class="text-gray-600 mb-4 text-sm">${offer.description}</p>
-                <span class="${textColor} font-bold uppercase text-xs mt-auto">Enquire Now &rarr;</span>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-function renderDealers() {
-    const container = document.getElementById('dealers-grid');
-    if (!container) return;
-
-    if (appData.dealers.length === 0) {
-        container.innerHTML = '<div class="col-span-full text-center text-gray-400">Dealer network updating...</div>';
-        return;
-    }
-
-    container.innerHTML = appData.dealers.map(d => `
-        <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-lg transition flex flex-col sm:flex-row gap-5">
-            <div class="w-full sm:w-28 h-28 bg-gray-50 rounded-lg flex-shrink-0 overflow-hidden">
-                <img src="${getDirectLink(d.image_url)}" class="w-full h-full object-cover">
-            </div>
-            <div class="flex-grow">
-                <h3 class="text-lg font-bold text-gray-900">${d.name}</h3>
-                <p class="text-sm text-gray-500 mb-3"><i class="fas fa-map-marker-alt text-honda-red mr-1"></i> ${d.location}</p>
-                <div class="space-y-1 text-sm text-gray-700">
-                    ${d.sales_contact ? `<div class="flex"><span class="w-16 font-semibold text-xs text-gray-400 mt-1">SALES</span> <a href="tel:${d.sales_contact}">${d.sales_contact}</a></div>` : ''}
-                    ${d.service_contact ? `<div class="flex"><span class="w-16 font-semibold text-xs text-gray-400 mt-1">SERVICE</span> <a href="tel:${d.service_contact}">${d.service_contact}</a></div>` : ''}
-                </div>
-            </div>
-        </div>
-    `).join('');
 }
 
 function renderProducts() {
@@ -300,325 +231,300 @@ function renderProducts() {
     if(mContainer) mContainer.innerHTML = '';
     if(sContainer) sContainer.innerHTML = '';
 
+    let motoCount = 0;
+    let scooterCount = 0;
+
     appData.products.forEach(p => {
         const html = createProductCard(p);
-        const type = (p.type || '').toLowerCase();
+        const type = (p.type || "").toLowerCase().trim();
         
-        if (type.includes('motorcycle') && mContainer) mContainer.innerHTML += html;
-        else if (type.includes('scooter') && sContainer) sContainer.innerHTML += html;
+        // Flexible matching for type
+        if (type.includes('motorcycle') || type.includes('bike')) {
+            if(mContainer) { mContainer.innerHTML += html; motoCount++; }
+        }
+        else if (type.includes('scooter') || type.includes('scooty')) {
+            if(sContainer) { sContainer.innerHTML += html; scooterCount++; }
+        }
     });
 
-    // Handle empty states
-    if (mContainer && mContainer.innerHTML === '') mContainer.innerHTML = '<p class="col-span-full text-center text-gray-400">No motorcycles found.</p>';
-    if (sContainer && sContainer.innerHTML === '') sContainer.innerHTML = '<p class="col-span-full text-center text-gray-400">No scooters found.</p>';
+    // Empty States
+    if(mContainer && motoCount === 0) {
+        mContainer.innerHTML = `<div class="col-span-full text-center py-10 text-gray-400">No motorcycles found. Please check 'Type' column in Sheet.</div>`;
+    }
+    if(sContainer && scooterCount === 0) {
+        sContainer.innerHTML = `<div class="col-span-full text-center py-10 text-gray-400">No scooters found. Please check 'Type' column in Sheet.</div>`;
+    }
 }
 
 function createProductCard(p) {
     const priceDisplay = p.price ? `₹ ${p.price}` : "View Details";
-    // Check if variants exist to show "Starts @"
-    const pricePrefix = (p.variants && p.variants.length > 1) ? 'Starts @ ' : '';
+    const variantCount = p.variants ? p.variants.length : 0;
+    
+    let colorSwatchesHtml = '';
+    if (p.colors && p.colors.length > 0) {
+        colorSwatchesHtml = `<div class="flex gap-1.5 mt-3 h-4 overflow-hidden">`;
+        p.colors.slice(0, 5).forEach(c => {
+            colorSwatchesHtml += `<span class="w-3.5 h-3.5 rounded-full border border-gray-200 shadow-sm ring-1 ring-gray-50" style="background-color: ${getColorHex(c.name)}" title="${c.name}"></span>`;
+        });
+        if(p.colors.length > 5) colorSwatchesHtml += `<span class="text-[9px] text-gray-400 font-medium self-center ml-1">+${p.colors.length - 5}</span>`;
+        colorSwatchesHtml += `</div>`;
+    }
 
-    return `
-    <div class="bg-white rounded-xl border border-gray-100 overflow-hidden cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full" onclick="openProductModal('${p.id}')">
-        <div class="h-56 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 relative overflow-hidden">
-            <img src="${getDirectLink(p.image_url)}" alt="${p.name}" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500">
-            <div class="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition">
-                <span class="bg-white rounded-full h-8 w-8 flex items-center justify-center shadow text-honda-red"><i class="fas fa-chevron-right"></i></span>
-            </div>
+    let variantBadge = variantCount > 0 ? `<span class="absolute top-4 right-4 bg-white/90 backdrop-blur text-gray-700 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm border border-gray-100/50">${variantCount} Variants</span>` : '';
+    
+    let displayImage = getDirectLink(p.image_url);
+
+    // --- CASUAL STYLIST DESIGN (Two-Tone) ---
+    return `<div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full" onclick="openProductModal('${p.product_id || p.id}')">
+        <!-- Two-Tone: Light Gray Top for Image -->
+        <div class="h-64 bg-gray-100/50 flex items-center justify-center p-6 relative overflow-hidden group-hover:bg-gray-100 transition-colors duration-500">
+            <!-- Note: Removed mix-blend-multiply to keep PNGs clean on gray -->
+            <img src="${displayImage}" alt="${p.name}" loading="lazy" class="max-h-full max-w-full object-contain group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/600x400?text=${p.name}'">
+            ${variantBadge}
         </div>
-        <div class="p-5 flex flex-col flex-grow">
-            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${p.type}</span>
-            <h3 class="font-display font-bold text-xl text-gray-900 mt-1 leading-tight">${p.name}</h3>
-            
-            <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-end">
+        
+        <!-- White Bottom for Content -->
+        <div class="p-6 flex flex-col flex-grow bg-white">
+            <div class="flex justify-between items-start mb-2">
                 <div>
+                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">${p.type || "Honda"}</span>
+                    <h3 class="font-display font-bold text-xl text-gray-900 leading-tight group-hover:text-honda-red transition-colors">${p.name}</h3>
+                </div>
+            </div>
+            
+            ${colorSwatchesHtml}
+            
+            <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+                <div class="flex flex-col">
                     <span class="text-[10px] text-gray-400 uppercase font-semibold">Ex-Showroom</span>
-                    <p class="text-honda-red font-bold text-lg leading-none">${pricePrefix}${priceDisplay}</p>
+                    <p class="text-gray-900 font-bold text-lg leading-none group-hover:text-honda-red transition-colors">${priceDisplay}</p>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center group-hover:bg-honda-red group-hover:text-white transition-all">
+                    <i class="fas fa-arrow-right text-xs"></i>
                 </div>
             </div>
         </div>
     </div>`;
 }
 
-// --- MODAL FUNCTIONS ---
+// --- MODAL & INTERACTIONS ---
 
 function openProductModal(productId) {
-    // Note: productId from Sheet usually comes as string/number, ensure type matching
-    const p = appData.products.find(x => String(x.id) === String(productId));
-    if(!p) { console.error("Product not found:", productId); return; }
+    const cleanId = standardizeId(productId);
+    const p = appData.products.find(x => standardizeId(x.product_id || x.id) === cleanId);
+    if(!p) return;
 
     const modal = document.getElementById('product-modal');
-    
-    // 1. Basic Info
     document.getElementById('modal-title').innerText = p.name;
     document.getElementById('modal-price').innerText = `Ex-Showroom: ₹ ${p.price || 'N/A'}`;
     
-    // Image
     const img = document.getElementById('modal-img');
     img.src = getDirectLink(p.image_url);
+    img.style.cursor = 'zoom-in'; // UX Hint
     img.onclick = () => openLightbox(img.src);
 
-    // Brochure
     const broLink = document.getElementById('modal-brochure');
-    const broUrl = getDirectLink(p.brochure, true);
-    if(broUrl && broUrl !== '#') {
-        broLink.href = broUrl;
-        broLink.classList.remove('hidden');
-    } else {
-        broLink.classList.add('hidden');
-    }
+    const broUrl = getDirectLink(p.brochure_url || p.brochure, true);
+    broLink.href = broUrl;
+    broLink.classList.toggle('hidden', broUrl === '#');
 
-    // 2. Variants Button Generation
+    // Variants
     const varContainer = document.getElementById('modal-variants');
     if(varContainer) {
         if(p.variants && p.variants.length > 0) {
             varContainer.innerHTML = p.variants.map((v, idx) => {
-                // Ensure properties exist even if sheet data is messy
-                const vPrice = v.price || p.price;
-                const vBroc = v.brochure || p.brochure;
-                const vName = v.name || "Standard";
                 const activeClass = idx === 0 ? 'bg-honda-red text-white border-honda-red' : 'bg-white text-gray-700 border-gray-200 hover:border-honda-red';
-                
-                return `<button onclick="updateVariant(this, '${vPrice}', '${vBroc}')" 
-                    class="variant-btn px-4 py-2 rounded text-sm font-medium border transition ${activeClass}">
-                    ${vName}
+                return `<button onclick="updateVariant(this, '${v.price}', '${v.brochure}')" 
+                    class="variant-btn px-4 py-2 m-1 rounded text-xs font-bold border transition duration-200 uppercase tracking-wide ${activeClass}">
+                    ${v.name}
                 </button>`;
             }).join('');
+            if(p.variants[0].price) document.getElementById('modal-price').innerText = `Ex-Showroom: ₹ ${p.variants[0].price}`;
         } else {
             varContainer.innerHTML = '<span class="text-xs text-gray-400 border px-3 py-1 rounded">Standard</span>';
         }
     }
 
-    // 3. Colors Generation
+    // Colors
     const colContainer = document.getElementById('modal-colors');
     if(colContainer) {
         if(p.colors && p.colors.length > 0) {
             colContainer.innerHTML = p.colors.map(c => `
-                <button onclick="updateColor(this, '${c.img}')" class="group relative focus:outline-none" title="${c.name}">
-                    <div class="w-8 h-8 rounded-full border border-gray-200 shadow-sm transition transform hover:scale-110 ring-2 ring-transparent group-hover:ring-gray-300" 
-                         style="background-color: ${getColorHex(c.name)}"></div>
-                </button>
-            `).join('');
+                <div onclick="updateColor(this, '${c.img}')" class="color-swatch w-8 h-8 rounded-full border border-gray-200 cursor-pointer shadow-sm inline-block mr-2 hover:scale-110 transition" 
+                     style="background-color: ${getColorHex(c.name)}" title="${c.name}">
+                </div>`).join('');
         } else {
             colContainer.innerHTML = '<span class="text-xs text-gray-400">Standard</span>';
         }
     }
 
-    // 4. Specs
-    renderSpecs(p);
-
-    // 5. Booking Button
+    renderSpecsUI(p.specs);
     document.getElementById('product-book-btn').onclick = () => openEnquiryModal('New Model', p.name);
-
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
 
 function updateVariant(btn, price, brochure) {
-    // Update UI Classes
     document.querySelectorAll('.variant-btn').forEach(b => {
         b.classList.remove('bg-honda-red', 'text-white', 'border-honda-red');
         b.classList.add('bg-white', 'text-gray-700', 'border-gray-200');
     });
     btn.classList.remove('bg-white', 'text-gray-700', 'border-gray-200');
     btn.classList.add('bg-honda-red', 'text-white', 'border-honda-red');
-
-    // Update Data
     document.getElementById('modal-price').innerText = `Ex-Showroom: ₹ ${price}`;
     
     const broLink = document.getElementById('modal-brochure');
     const broUrl = getDirectLink(brochure, true);
-    if(broUrl && broUrl !== '#') {
-        broLink.href = broUrl;
-        broLink.classList.remove('hidden');
-    } else {
-        broLink.classList.add('hidden');
-    }
+    broLink.href = broUrl;
+    broLink.classList.toggle('hidden', broUrl === '#');
 }
 
 function updateColor(btn, imgUrl) {
+    document.querySelectorAll('.color-swatch').forEach(b => {
+        b.style.transform = 'scale(1)';
+        b.style.boxShadow = 'none';
+    });
+    btn.style.transform = 'scale(1.2)';
+    btn.style.boxShadow = '0 0 0 2px white, 0 0 0 4px #CC0000';
+    
     const fixedUrl = getDirectLink(imgUrl);
-    // If specific color image exists, swap it
-    if(fixedUrl && fixedUrl !== "https://placehold.co/600x400?text=No+Image") {
+    if(fixedUrl && !fixedUrl.includes('placehold')) {
         const img = document.getElementById('modal-img');
         img.style.opacity = '0.5';
-        setTimeout(() => {
-            img.src = fixedUrl;
-            img.style.opacity = '1';
-        }, 200);
+        setTimeout(() => { img.src = fixedUrl; img.style.opacity = '1'; }, 200);
     }
 }
 
-function renderSpecs(p) {
+function renderSpecsUI(specs) {
     const tabs = document.getElementById('specs-tabs');
     const content = document.getElementById('specs-content');
     
-    if(!p.specs || Object.keys(p.specs).length === 0) {
+    if (!specs || Object.keys(specs).length === 0) {
         tabs.innerHTML = '';
         content.innerHTML = '<p class="text-center text-gray-400 py-8">Specifications updating...</p>';
         return;
     }
 
-    const categories = Object.keys(p.specs);
-    
-    // Generate Tabs
+    const categories = Object.keys(specs);
     tabs.innerHTML = categories.map((cat, idx) => `
         <button onclick="switchSpecTab(this, '${cat}')" 
             class="px-4 py-2 text-sm font-medium border-b-2 transition whitespace-nowrap ${idx === 0 ? 'border-honda-red text-honda-red bg-red-50/50' : 'border-transparent text-gray-500 hover:text-gray-800'}">
             ${cat}
-        </button>
-    `).join('');
+        </button>`).join('');
 
-    // Generate Initial Content
+    // Store specs globally for tab switching
+    window.currentProductSpecs = specs;
     switchSpecTab(tabs.children[0], categories[0]);
-    
-    // Helper to store data on DOM isn't ideal, but for simple app:
-    // We'll just look up data again in switchSpecTab
 }
 
-// Make this global so onclick works
 window.switchSpecTab = function(btn, category) {
-    // UI Updates
     const tabs = document.getElementById('specs-tabs');
     Array.from(tabs.children).forEach(b => b.className = 'px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition whitespace-nowrap');
-    btn.className = 'px-4 py-2 text-sm font-medium border-b-2 border-honda-red text-honda-red bg-red-50/50 transition whitespace-nowrap';
+    if(btn) btn.className = 'px-4 py-2 text-sm font-medium border-b-2 border-honda-red text-honda-red bg-red-50/50 transition whitespace-nowrap';
 
-    // Content Updates
-    const pName = document.getElementById('modal-title').innerText;
-    const p = appData.products.find(x => x.name === pName);
-    const specs = p?.specs[category] || [];
+    const specs = window.currentProductSpecs ? window.currentProductSpecs[category] : [];
     
     const content = document.getElementById('specs-content');
-    content.innerHTML = `
-        <table class="w-full text-sm">
-            ${specs.map((row, i) => `
-                <tr class="${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b border-gray-100">
-                    <td class="py-2 px-3 font-semibold text-gray-700 w-1/2">${row.label}</td>
-                    <td class="py-2 px-3 text-gray-600">${row.value}</td>
-                </tr>
-            `).join('')}
-        </table>`;
+    content.innerHTML = `<table class="w-full text-sm">${specs.map((row, i) => `
+        <tr class="${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b border-gray-100">
+            <td class="py-2 px-3 font-semibold text-gray-700 w-1/2">${row.label}</td>
+            <td class="py-2 px-3 text-gray-600">${row.value}</td>
+        </tr>`).join('')}</table>`;
 }
 
-// --- GENERAL UI FUNCTIONS ---
-
+// --- GENERAL UI ---
 function switchPage(pageId) {
     window.scrollTo({top:0, behavior:'smooth'});
     document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-    
     const target = document.getElementById('view-'+pageId);
     if(target) target.classList.remove('hidden');
-    
     document.getElementById('mobile-menu').classList.add('hidden');
 }
 
 function openEnquiryModal(type, modelName) {
     const modal = document.getElementById('enquiry-modal');
     document.getElementById('enquiry-title').innerText = type;
-    
     const typeSelect = document.getElementById('modal-enquiry-type');
     const modelContainer = document.getElementById('model-select-container');
     const modelSelect = document.getElementById('modal-model');
 
-    // Reset logic
     if (type === 'New Model' || type === 'Exchange') {
         typeSelect.value = type;
         modelContainer.classList.remove('hidden');
         if(modelName) modelSelect.value = modelName;
     } else {
-        // Map other strings to select values if needed
         typeSelect.value = type.includes('Service') ? 'Service Booking' : (type.includes('Insurance') ? 'Insurance Renewal' : 'General Enquiry');
         modelContainer.classList.add('hidden');
     }
-
     modal.classList.remove('hidden');
 }
 
-function closeEnquiryModal() {
-    document.getElementById('enquiry-modal').classList.add('hidden');
+function renderOffers() {
+    const box = document.getElementById('offers-grid');
+    if(!box) return;
+    if(appData.offers.length === 0) { box.innerHTML = '<div class="col-span-full text-center text-gray-400">No active offers.</div>'; return; }
+    box.innerHTML = appData.offers.map(o => {
+        const isFin = (o.type||'').toLowerCase().includes('finance');
+        return `<div onclick="openEnquiryModal('${o.type}', '${o.title}')" class="bg-white rounded-xl shadow-lg cursor-pointer border-t-4 ${isFin?'border-honda-red':'border-blue-600'} flex flex-col group overflow-hidden">
+            <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                <img src="${getDirectLink(o.image_url)}" class="w-full h-full object-contain p-2 group-hover:scale-105 transition cursor-zoom-in" 
+                     onclick="event.stopPropagation(); openLightbox(this.src)">
+            </div>
+            <div class="p-6 text-center flex-grow flex flex-col"><h3 class="font-bold text-xl mb-2">${o.title}</h3><p class="text-sm text-gray-600 mb-4">${o.description}</p><span class="mt-auto font-bold text-xs uppercase ${isFin?'text-honda-red':'text-blue-600'}">Enquire Now &rarr;</span></div>
+        </div>`;
+    }).join('');
 }
 
-function closeModal() {
-    document.getElementById('product-modal').classList.add('hidden');
-    document.body.style.overflow = 'auto';
+function renderDealers() {
+    const box = document.getElementById('dealers-grid');
+    if(!box) return;
+    box.innerHTML = appData.dealers.map(d => `
+        <div class="bg-white border rounded-xl p-5 flex flex-col sm:flex-row gap-5 shadow-sm hover:shadow-md transition">
+            <div class="w-full sm:w-28 h-28 bg-gray-50 rounded shrink-0 overflow-hidden">
+                <img src="${getDirectLink(d.image_url)}" class="w-full h-full object-cover cursor-zoom-in" onclick="openLightbox(this.src)">
+            </div>
+            <div><h3 class="font-bold text-lg">${d.name}</h3><p class="text-sm text-gray-500 mb-2"><i class="fas fa-map-marker-alt text-honda-red mr-1"></i> ${d.location}</p>
+            ${d.sales_contact?`<div class="text-sm"><span class="font-bold text-xs text-gray-400">SALES:</span> <a href="tel:${d.sales_contact}">${d.sales_contact}</a></div>`:''}
+            ${d.service_contact?`<div class="text-sm"><span class="font-bold text-xs text-gray-400">SERVICE:</span> <a href="tel:${d.service_contact}">${d.service_contact}</a></div>`:''}
+            </div>
+        </div>`).join('');
 }
 
-function openLightbox(src) {
-    document.getElementById('lightbox-img').src = src;
-    document.getElementById('lightbox-modal').classList.remove('hidden');
-}
-
-function closeLightbox() {
-    document.getElementById('lightbox-modal').classList.add('hidden');
-}
-
-function toggleModelDropdown(val) {
-    const el = document.getElementById('model-select-container');
-    if(val === 'New Model' || val === 'Exchange') el.classList.remove('hidden');
-    else el.classList.add('hidden');
-}
-
-function populateModelDropdown() {
-    const sel = document.getElementById('modal-model');
-    sel.innerHTML = '<option value="" disabled selected>Select Model</option>';
-    appData.products.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p.name;
-        opt.innerText = p.name;
-        sel.appendChild(opt);
+function renderServiceImages() {
+    appData.services.forEach(s => {
+        const id = s.id || s.service_id;
+        if(id) { 
+            const el = document.getElementById(`img-service-${id.toLowerCase()}`); 
+            if(el) {
+                el.src = getDirectLink(s.image_url);
+                el.style.cursor = 'zoom-in';
+                el.onclick = () => openLightbox(el.src);
+            }
+        }
     });
 }
 
-function getColorHex(name) {
-    name = name.toLowerCase();
-    if(name.includes('red')) return '#DC2626';
-    if(name.includes('blue')) return '#2563EB';
-    if(name.includes('black')) return '#1F2937';
-    if(name.includes('white')) return '#F3F4F6';
-    if(name.includes('grey') || name.includes('gray')) return '#6B7280';
-    if(name.includes('matte')) return '#374151';
-    if(name.includes('yellow')) return '#EAB308';
-    return '#9CA3AF'; // Default gray
+function renderSocials() {
+    const div = document.getElementById('social-links-container');
+    if(!div) return;
+    const map = { facebook_url: 'fa-facebook-f', instagram_url: 'fa-instagram', youtube_url: 'fa-youtube', twitter_url: 'fa-x-twitter' };
+    div.innerHTML = Object.keys(map).map(k => appData.config[k] ? `<a href="${appData.config[k]}" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab ${map[k]}"></i></a>` : '').join('');
+    const wa = document.getElementById('wa-link'); if(wa && appData.config.whatsapp_number) wa.href = `https://wa.me/${appData.config.whatsapp_number}`;
 }
 
-// Form Handler
-window.handleFormSubmit = function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    const form = e.target;
-    
-    const originalText = btn.innerText;
-    btn.innerText = "Sending...";
-    btn.disabled = true;
+// Make globally available for inline onclicks
+window.openLightbox = function(src) { 
+    document.getElementById('lightbox-img').src = src; 
+    document.getElementById('lightbox-modal').classList.remove('hidden'); 
+};
 
-    // Convert form data to object
-    const data = {};
-    new FormData(form).forEach((value, key) => data[key] = value);
+function closeEnquiryModal() { document.getElementById('enquiry-modal').classList.add('hidden'); }
+function closeModal() { document.getElementById('product-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
+function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox-modal').classList.remove('hidden'); }
+function closeLightbox() { document.getElementById('lightbox-modal').classList.add('hidden'); }
+function toggleModelDropdown(val) { document.getElementById('model-select-container').classList.toggle('hidden', !(val === 'New Model' || val === 'Exchange')); }
+function populateModelDropdown() { const s = document.getElementById('modal-model'); s.innerHTML = '<option value="" disabled selected>Select Model</option>'; appData.products.forEach(p => { const o = document.createElement('option'); o.value = p.name; o.innerText = p.name; s.appendChild(o); }); }
+function getColorHex(n) { n=n.toLowerCase(); if(n.includes('red')) return '#DC2626'; if(n.includes('blue')) return '#2563EB'; if(n.includes('black')) return '#1F2937'; if(n.includes('white')) return '#F3F4F6'; if(n.includes('grey')) return '#6B7280'; if(n.includes('yellow')) return '#EAB308'; if(n.includes('matte')) return '#374151'; return '#9CA3AF'; }
+window.handleFormSubmit = function(e) { e.preventDefault(); const btn = document.getElementById('submitBtn'); const form = e.target; const txt = btn.innerText; btn.innerText = "Sending..."; btn.disabled = true; const d = {}; new FormData(form).forEach((v, k) => d[k] = v); fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d) }).then(() => { const t = document.getElementById('toast'); t.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000); form.reset(); closeEnquiryModal(); }).catch(e => console.error(e)).finally(() => { btn.innerText = txt; btn.disabled = false; }); }
 
-    fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors', // Important for Google Script POST
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(() => {
-        // Show Success
-        const toast = document.getElementById('toast');
-        toast.classList.remove('translate-y-20', 'opacity-0');
-        setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
-        
-        form.reset();
-        closeEnquiryModal();
-    })
-    .catch(err => {
-        alert("There was an error sending your message. Please call us directly.");
-        console.error(err);
-    })
-    .finally(() => {
-        btn.innerText = originalText;
-        btn.disabled = false;
-    });
-}
-
-// Start App
 document.addEventListener('DOMContentLoaded', init);

@@ -67,3 +67,28 @@
     border-color: #CC0000;
     color: #CC0000;
 }
+.variant-btn.active {
+    background-color: #CC0000;
+    color: white;
+    border-color: #CC0000;
+}
+
+/* Color Swatch Styling */
+.color-swatch {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+    border-color: #9ca3af;
+}
+
+.color-swatch.active {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #CC0000; /* Ring Effect */
+}
