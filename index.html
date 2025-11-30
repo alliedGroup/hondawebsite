@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harish Honda - Authorized Dealer | Silchar</title>
     
-    <!-- Tailwind CSS (CDN) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts -->
@@ -17,7 +17,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Tailwind Configuration -->
+    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
@@ -106,19 +106,19 @@
         <div id="view-home" class="view-section page-enter">
             <!-- Hero -->
             <section class="relative h-[500px] flex items-center bg-gray-900 overflow-hidden">
-                <div class="absolute inset-0">
-                    <video id="hero-video" autoplay muted loop playsinline class="w-full h-full object-cover opacity-50">
-                        <source src="" type="video/mp4">
-                    </video>
+                <div id="hero-media-container" class="absolute inset-0 bg-black">
+                     <!-- Populated by JS -->
                 </div>
+                <div class="absolute inset-0 bg-black/40 pointer-events-none"></div>
+                
                 <div class="relative z-10 container mx-auto px-4 text-white">
                     <h1 class="text-5xl md:text-7xl font-display font-bold mb-4 leading-tight">THE POWER OF <br/><span class="text-honda-red">DREAMS</span></h1>
                     <p class="text-lg text-gray-300 mb-8 max-w-lg">Your trusted authorized Honda dealership in Silchar.</p>
-                    <button onclick="switchPage('motorcycles')" class="px-8 py-3 bg-honda-red text-white rounded font-bold hover:bg-red-700 shadow-lg uppercase tracking-wide">View Models</button>
+                    <button onclick="switchPage('motorcycles')" class="px-8 py-3 bg-honda-red text-white rounded font-bold hover:bg-red-700 shadow-lg uppercase tracking-wide pointer-events-auto">View Models</button>
                 </div>
             </section>
 
-            <!-- Professional Services Section (Replaces Trending) -->
+            <!-- Professional Services Section -->
             <section class="py-20 bg-white relative -mt-16 z-20">
                 <div class="container mx-auto px-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -172,7 +172,7 @@
                 </div>
                 <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div onclick="switchPage('motorcycles')" class="relative h-72 rounded-2xl overflow-hidden cursor-pointer group bg-black shadow-lg">
-                        <img src="motorcyles.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition duration-500">
+                        <img src="motorcyles.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition duration-500" onerror="this.src='https://placehold.co/800x600?text=Motorcycles'">
                         <div class="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/90 to-transparent">
                             <h3 class="text-3xl font-display font-bold text-white mb-1">MOTORCYCLES</h3>
                             <p class="text-gray-300 text-sm mb-4">Performance & Efficiency</p>
@@ -180,7 +180,7 @@
                         </div>
                     </div>
                     <div onclick="switchPage('scooters')" class="relative h-72 rounded-2xl overflow-hidden cursor-pointer group bg-black shadow-lg">
-                        <img src="dio125.jpg" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition duration-500">
+                        <img src="dio125.jpg" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition duration-500" onerror="this.src='https://placehold.co/800x600?text=Scooters'">
                         <div class="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/90 to-transparent">
                             <h3 class="text-3xl font-display font-bold text-white mb-1">SCOOTERS</h3>
                             <p class="text-gray-300 text-sm mb-4">Comfort & Convenience</p>
@@ -191,6 +191,8 @@
             </section>
         </div>
 
+        <!-- DYNAMIC VIEWS -->
+        
         <!-- MOTORCYCLES VIEW -->
         <div id="view-motorcycles" class="view-section hidden py-16 page-enter">
             <div class="bg-honda-dark py-12 mb-12">
@@ -243,15 +245,10 @@
                     <div>
                         <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">HONDA <span class="text-honda-red">SHIELD</span></h2>
                         <p class="text-lg text-gray-600 mb-6">Honda Shield is an extended warranty program that offers you peace of mind for up to 6 years. It covers major engine components and essential electrical parts against manufacturing defects.</p>
-                        <ul class="space-y-3 mb-8 text-gray-700">
-                            <li class="flex items-center"><i class="fas fa-check text-honda-red mr-3"></i> Major engine component coverage</li>
-                            <li class="flex items-center"><i class="fas fa-check text-honda-red mr-3"></i> Cashless service across India</li>
-                            <li class="flex items-center"><i class="fas fa-check text-honda-red mr-3"></i> Higher resale value</li>
-                        </ul>
                         <button onclick="openEnquiryModal('Service Booking')" class="bg-honda-red text-white px-8 py-3 rounded font-bold shadow-lg hover:bg-red-700 transition">Enquire Now</button>
                     </div>
                     <div class="bg-white p-8 rounded-2xl shadow-xl">
-                        <img id="img-service-shield" src="image_cc5b9e.jpg" class="w-full rounded-lg" alt="Shield">
+                        <img id="img-service-shield" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Honda+Shield" class="w-full rounded-lg">
                     </div>
                 </div>
             </div>
@@ -262,7 +259,7 @@
                 <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">GENUINE <span class="text-honda-red">OIL</span></h2>
                 <p class="text-lg text-gray-600 mb-8">Keep your engine young and powerful. Honda Genuine Oil (10W30 MA) is specifically formulated for high-performance Honda engines.</p>
                 <div class="mb-8 max-w-md mx-auto">
-                    <img id="img-service-oil" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Oil" class="w-full rounded-lg shadow-md" alt="Engine Oil">
+                    <img id="img-service-oil" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Oil" class="w-full rounded-lg shadow-md">
                 </div>
                 <button onclick="openEnquiryModal('Service Booking')" class="bg-gray-900 text-white px-8 py-3 rounded font-bold hover:bg-black transition">Order Now</button>
             </div>
@@ -273,7 +270,7 @@
                 <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">GENUINE <span class="text-honda-red">PARTS</span></h2>
                 <p class="text-lg text-gray-600 mb-8">Don't compromise on safety. Use only 100% Honda Genuine Parts designed to fit perfectly and last longer.</p>
                 <div class="mb-8 max-w-md mx-auto">
-                    <img id="img-service-parts" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Parts" class="w-full rounded-lg shadow-md" alt="Genuine Parts">
+                    <img id="img-service-parts" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Parts" class="w-full rounded-lg shadow-md">
                 </div>
                 <button onclick="openEnquiryModal('Service Booking')" class="bg-gray-900 text-white px-8 py-3 rounded font-bold hover:bg-black transition">Enquire Parts</button>
             </div>
@@ -304,59 +301,8 @@
                     </div>
                 </div>
 
-                <!-- Department Contacts Section -->
-                <div class="mt-16 mb-12">
-                    <h3 class="text-2xl font-display font-bold text-gray-900 mb-8 text-center">DEPARTMENT <span class="text-honda-red">CONTACTS</span></h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-                        <!-- Sales -->
-                        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-honda-red hover:shadow-md transition-shadow">
-                            <h4 class="font-bold text-lg mb-3 flex items-center text-gray-900"><i class="fas fa-tag text-honda-red mr-3"></i> Sales</h4>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex justify-between"><span class="font-semibold">Reception:</span> <a href="tel:9854092624" class="hover:text-honda-red">98540 92624</a></li>
-                                <li class="flex justify-between"><span class="font-semibold">Sales Exec:</span> <a href="tel:9854092604" class="hover:text-honda-red">98540 92604</a></li>
-                                <li class="flex justify-between"><span class="font-semibold">Sales Exec:</span> <a href="tel:9854092601" class="hover:text-honda-red">98540 92601</a></li>
-                            </ul>
-                        </div>
-                        
-                        <!-- Service -->
-                        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-gray-800 hover:shadow-md transition-shadow">
-                            <h4 class="font-bold text-lg mb-3 flex items-center text-gray-900"><i class="fas fa-wrench text-gray-800 mr-3"></i> Service</h4>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex justify-between"><span class="font-semibold">Booking:</span> <a href="tel:9854092602" class="hover:text-honda-red">98540 92602</a></li>
-                                <li class="flex justify-between"><span class="font-semibold">Booking Alt:</span> <a href="tel:9854092632" class="hover:text-honda-red">98540 92632</a></li>
-                                <li class="flex justify-between"><span class="font-semibold">CRM:</span> <a href="tel:9854092635" class="hover:text-honda-red">98540 92635</a></li>
-                                <li class="flex justify-between"><span class="font-semibold">Complaints:</span> <a href="tel:7002988081" class="hover:text-honda-red">70029 88081</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- PDI -->
-                        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-600 hover:shadow-md transition-shadow">
-                            <h4 class="font-bold text-lg mb-3 flex items-center text-gray-900"><i class="fas fa-clipboard-check text-blue-600 mr-3"></i> PDI</h4>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex justify-between"><span class="font-semibold">Executive:</span> <a href="tel:9854092628" class="hover:text-honda-red">98540 92628</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Insurance -->
-                        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-green-600 hover:shadow-md transition-shadow">
-                            <h4 class="font-bold text-lg mb-3 flex items-center text-gray-900"><i class="fas fa-shield-alt text-green-600 mr-3"></i> Insurance</h4>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex justify-between"><span class="font-semibold">Executive:</span> <a href="tel:9854092623" class="hover:text-honda-red">98540 92623</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Parts -->
-                        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-yellow-500 hover:shadow-md transition-shadow">
-                            <h4 class="font-bold text-lg mb-3 flex items-center text-gray-900"><i class="fas fa-cogs text-yellow-500 mr-3"></i> Parts</h4>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex justify-between"><span class="font-semibold">Manager:</span> <a href="tel:9854092633" class="hover:text-honda-red">98540 92633</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Google Map -->
-                <div class="h-96 bg-gray-200 rounded-xl overflow-hidden shadow-inner">
+                <div class="h-96 bg-gray-200 rounded-xl overflow-hidden shadow-inner mt-12">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.835786543214!2d92.8017584!3d24.8039733!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x374e4a3f21eebf41%3A0xacb25671c058e9f4!2sHarish%20Honda!5e0!3m2!1sen!2sin!4v1716458000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
@@ -374,15 +320,7 @@
                         <span class="font-display font-bold text-xl">HARISH HONDA</span>
                     </div>
                     <p class="text-gray-400 text-sm leading-relaxed mb-6">Authorized Main Dealer for Honda Motorcycle & Scooter India Pvt. Ltd. Serving Silchar with trust.</p>
-                    <!-- Social Media Links -->
-                    <div id="social-links-container" class="flex space-x-4 mt-6">
-                        <!-- Default Static Links -->
-                        <a href="https://facebook.com" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f text-lg"></i></a>
-                        <a href="https://instagram.com" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram text-lg"></i></a>
-                        <a href="https://youtube.com" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube text-lg"></i></a>
-                        <a href="https://linkedin.com" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin-in text-lg"></i></a>
-                        <a href="https://twitter.com" target="_blank" class="text-gray-400 hover:text-white transition"><i class="fab fa-x-twitter text-lg"></i></a>
-                    </div>
+                    <div id="social-links-container" class="flex space-x-4 mt-6"></div>
                 </div>
                 <div>
                     <h3 class="font-display font-bold text-lg mb-6 tracking-wide">QUICK LINKS</h3>
@@ -397,7 +335,6 @@
                     <ul class="space-y-4 text-sm text-gray-400">
                         <li class="flex items-start"><i class="fas fa-map-marker-alt w-5 mt-1 text-honda-red"></i><span>Sonai Road, Near Tribeni Filling Station, Kanakpur, Silchar, Assam 788006</span></li>
                         <li class="flex items-center"><i class="fas fa-phone w-5 text-honda-red"></i><span>98540 92624</span></li>
-                        <li class="flex items-center"><i class="fas fa-envelope w-5 text-honda-red"></i><span>allied_distributors@yahoo.com</span></li>
                     </ul>
                 </div>
                 <div>
@@ -420,7 +357,7 @@
     <div id="enquiry-modal" class="fixed inset-0 z-[150] hidden overflow-y-auto backdrop-blur-sm bg-black/50 flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 relative animate-in zoom-in duration-200">
             <button onclick="closeEnquiryModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
-            <h3 class="text-2xl font-display font-bold text-gray-900 mb-6" id="enquiry-title">Send Enquiry</h3>
+            <h3 class="text-2xl font-display font-bold text-gray-900 mb-6"><span id="enquiry-title">Send Enquiry</span></h3>
             <form id="inquiryForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <input name="name" type="text" placeholder="Full Name" required class="w-full px-4 py-3 rounded bg-gray-50 border border-gray-300 focus:border-honda-red focus:outline-none transition text-sm">
@@ -434,7 +371,6 @@
                     <option value="General Enquiry">General Enquiry</option>
                 </select>
                 
-                <!-- Model Selection (Dynamically Filled) -->
                 <div id="model-select-container" class="hidden">
                     <select name="model" id="modal-model" class="w-full px-4 py-3 rounded bg-gray-50 border border-gray-300 focus:border-honda-red focus:outline-none transition text-sm">
                         <option value="" disabled selected>Select Model</option>
@@ -447,7 +383,7 @@
         </div>
     </div>
 
-    <!-- Product Modal (Wider for Specs) -->
+    <!-- Product Modal -->
     <div id="product-modal" class="fixed inset-0 z-[100] hidden overflow-y-auto backdrop-blur-sm bg-black/50 flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl p-6 relative animate-in zoom-in duration-200 flex flex-col md:flex-row gap-8 max-h-[90vh] overflow-y-auto">
             
@@ -456,10 +392,7 @@
             <!-- Left Side: Image & Basic Info -->
             <div class="w-full md:w-1/3 flex-shrink-0">
                 <div class="h-64 flex items-center justify-center mb-6 bg-gray-50 rounded-lg group relative cursor-zoom-in">
-                    <img id="modal-img" src="" alt="" class="max-h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/5 rounded-lg pointer-events-none">
-                        <i class="fas fa-search-plus text-2xl text-gray-400"></i>
-                    </div>
+                    <img id="modal-img" src="" alt="" class="max-h-full max-w-full object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105">
                 </div>
 
                 <h3 id="modal-title" class="text-3xl font-bold text-gray-900 text-center font-display mb-1"></h3>
@@ -484,30 +417,23 @@
             </div>
 
             <!-- Right Side: Tech Specs -->
-            <div class="w-full md:w-2/3 border-l border-gray-100 md:pl-8">
+            <div class="w-full md:w-2/3 border-l border-gray-100 md:pl-8 flex flex-col">
                 <h4 class="text-xl font-bold text-gray-900 mb-6">Technical Specifications</h4>
-                
-                <!-- Specs Tabs -->
                 <div id="specs-tabs" class="flex flex-wrap gap-2 border-b border-gray-200 pb-1 mb-4 overflow-x-auto no-scrollbar"></div>
-
-                <!-- Specs Content Table -->
-                <div id="specs-content" class="bg-gray-50 rounded-lg p-4 h-80 overflow-y-auto custom-scrollbar">
-                    <p class="text-gray-400 text-center mt-10">Select a category above to see details.</p>
-                </div>
+                <div id="specs-content" class="bg-gray-50 rounded-lg p-4 h-80 overflow-y-auto custom-scrollbar flex-grow"></div>
             </div>
-
         </div>
     </div>
 
     <!-- Lightbox Modal -->
     <div id="lightbox-modal" class="fixed inset-0 z-[200] hidden bg-black/90 flex items-center justify-center p-4 cursor-zoom-out" onclick="closeLightbox()">
-        <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-150 cursor-move" alt="Full Screen View">
+        <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-150 cursor-move">
     </div>
 
-    <!-- Toast -->
+    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-8 right-8 bg-gray-900 text-white px-6 py-4 rounded shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-[110] flex items-center gap-3">
         <i class="fas fa-check-circle text-green-400 text-xl"></i> 
-        <span id="toast-msg" class="font-medium">Message Sent!</span>
+        <span class="font-medium">Request Sent Successfully!</span>
     </div>
 
     <script src="js/script.js"></script>
