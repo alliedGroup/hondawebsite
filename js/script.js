@@ -279,7 +279,7 @@ function createProductCard(p) {
         <!-- Two-Tone: Light Gray Top for Image -->
         <div class="h-64 bg-gray-100/50 flex items-center justify-center p-6 relative overflow-hidden group-hover:bg-gray-100 transition-colors duration-500">
             <!-- Note: Removed mix-blend-multiply to keep PNGs clean on gray -->
-            <img src="${displayImage}" alt="${p.name}" loading="lazy" class="max-h-full max-w-full object-contain group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/600x400?text=${p.name}'">
+            <img src="${displayImage}" alt="${p.name}" loading="lazy" class="h-full w-auto object-cover mix-blend-multiply transition duration-500 group-hover:scale-110" onerror="this.src='https://placehold.co/600x400?text=${p.name}'">
             ${variantBadge}
         </div>
         
@@ -526,5 +526,6 @@ function toggleModelDropdown(val) { document.getElementById('model-select-contai
 function populateModelDropdown() { const s = document.getElementById('modal-model'); s.innerHTML = '<option value="" disabled selected>Select Model</option>'; appData.products.forEach(p => { const o = document.createElement('option'); o.value = p.name; o.innerText = p.name; s.appendChild(o); }); }
 function getColorHex(n) { n=n.toLowerCase(); if(n.includes('red')) return '#DC2626'; if(n.includes('blue')) return '#2563EB'; if(n.includes('black')) return '#1F2937'; if(n.includes('white')) return '#F3F4F6'; if(n.includes('grey')) return '#6B7280'; if(n.includes('yellow')) return '#EAB308'; if(n.includes('matte')) return '#374151'; return '#9CA3AF'; }
 window.handleFormSubmit = function(e) { e.preventDefault(); const btn = document.getElementById('submitBtn'); const form = e.target; const txt = btn.innerText; btn.innerText = "Sending..."; btn.disabled = true; const d = {}; new FormData(form).forEach((v, k) => d[k] = v); fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d) }).then(() => { const t = document.getElementById('toast'); t.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000); form.reset(); closeEnquiryModal(); }).catch(e => console.error(e)).finally(() => { btn.innerText = txt; btn.disabled = false; }); }
+
 
 document.addEventListener('DOMContentLoaded', init);
