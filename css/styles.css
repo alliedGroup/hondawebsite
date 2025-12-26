@@ -1,6 +1,7 @@
-/* Custom Scrollbar */
+/* --- Global Custom Scrollbar --- */
 ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
@@ -13,25 +14,33 @@
     background: #94a3b8;
 }
 
-/* Page Transitions */
+/* Firefox scrollbar fallback */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f1f1;
+}
+
+/* --- Smooth Page Transitions --- */
 .page-enter {
     animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: transform, opacity;
 }
 
 @keyframes fadeSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Navigation Links - Underline Effect */
+/* --- Navigation Links --- */
 .nav-link {
     position: relative;
+    padding-bottom: 2px;
+    cursor: pointer;
+}
+
+/* --- Headings Title Case --- */
+h1, h2, h3, h4, h5, h6 {
+  text-transform: capitalize;
 }
 
 .nav-link::after {
@@ -42,53 +51,328 @@
     bottom: -4px;
     left: 0;
     background-color: #CC0000;
-    transition: width 0.3s;
+    transition: width 0.3s ease;
 }
 
 .nav-link:hover::after {
     width: 100%;
 }
 
-/* Utilities */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
+/* --- Utility: Hide Scrollbars --- */
+.no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
 
-/* Variant Selection Styling */
-.variant-btn {
-    transition: all 0.2s;
-    border: 1px solid #e5e7eb;
+/* --- About View & Interactive Cards --- */
+.about-card {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                background-color 0.3s ease;
 }
-.variant-btn:hover {
-    border-color: #CC0000;
+
+.about-card:hover {
+    transform: translateY(-12px);
+    background-color: white !important;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+    will-change: transform;
+}
+
+/* --- CONTACTS CARD & BUTTONS --- */
+.contact-card {
+    background-color: white;
+    padding: 1.25rem;
+    border-radius: 1.5rem;
+    border: 1px solid #f3f4f6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: border-color 0.3s ease;
+}
+
+.contact-label {
+    display: block;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+}
+
+.contact-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f9fafb;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    border: 1px solid #f3f4f6;
+}
+
+.contact-btn::after {
+    content: '\f095';
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    opacity: 0.3;
+    font-size: 0.6rem;
+}
+
+.contact-btn:hover {
+    background-color: #fef2f2;
+    color: #CC0000;
+    border-color: #fee2e2;
+}
+
+/* --- FOOTER ELEMENTS --- */
+.footer-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     color: #CC0000;
 }
-.variant-btn.active {
-    background-color: #CC0000;
-    color: white;
-    border-color: #CC0000;
+
+@media (min-width: 1024px) {
+    .footer-title { color: #ffffff; }
 }
 
-/* Color Swatch Styling */
-.color-swatch {
-    width: 2rem;
-    height: 2rem;
+.footer-btn {
+    background-color: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.6rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.footer-btn::before {
+    content: '\f095';
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: #CC0000;
+}
+
+.footer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+/* --- STATS & CAROUSEL --- */
+.stat-badge {
+    background-color: #f9fafb;
+    padding: 1.5rem 1rem;
+    border-radius: 1.5rem;
+    text-align: center;
+    border: 1px solid #f1f5f9;
+}
+
+.carousel-nav-btn {
+    background-color: white;
+    color: #1f2937;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 9999px;
-    border: 1px solid #e5e7eb;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: inline-block;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    border: 1px solid #f3f4f6;
+    transition: all 0.3s ease;
+    z-index: 30;
 }
 
-.color-swatch:hover {
-    transform: scale(1.1);
-    border-color: #9ca3af;
+/* --- FORM INPUT --- */
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background-color: #f9fafb;
+    border: 1px solid #d1d5db;
+    font-size: 0.875rem;
 }
 
-.color-swatch.active {
-    box-shadow: 0 0 0 2px white, 0 0 0 4px #CC0000; /* Ring Effect */
+/* --- CUSTOM SCROLLBAR (Small) --- */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+/* ========================================= */
+/* MOBILE: FIX CUT PRODUCT IMAGES COMPLETELY */
+/* ========================================= */
+@media (max-width: 639px) {
+
+  /* Product image wrapper */
+  #motorcycle-grid .h-64,
+  #scooter-grid .h-64 {
+    height: 170px !important;      /* 🔑 KEY FIX */
+    padding: 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Actual product image */
+  #motorcycle-grid img,
+  #scooter-grid img {
+    width: auto !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    max-width: 100% !important;
+    object-fit: contain !important;  /* NEVER crop */
+    mix-blend-mode: normal !important;
+    transform: none !important;
+  }
+}
+/* ========================================= */
+/* MOBILE: COMPACT DEPARTMENT CONTACTS */
+/* ========================================= */
+@media (max-width: 639px) {
+
+  /* Overall section spacing */
+  #dept-contacts-container {
+    margin-top: 2rem !important;
+  }
+
+  /* Each department card */
+  #dept-contacts-container > div > div {
+    padding: 0.75rem !important;
+    border-radius: 0.75rem !important;
+  }
+/* ========================================= */
+/* MOBILE: 2x2 GRID FOR DEPARTMENT CONTACTS */
+/* ========================================= */
+@media (max-width: 639px) {
+
+  /* Force 2-column grid */
+  #dept-contacts-container .grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Each department card */
+  #dept-contacts-container .grid > div {
+    padding: 0.6rem !important;
+    border-radius: 0.75rem !important;
+  }
+
+  /* Department title (Sales, Service…) */
+  #dept-contacts-container h4 {
+    font-size: 0.8rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  /* Labels: SHOWROOM, BOOKING, etc. */
+  #dept-contacts-container span.uppercase {
+    font-size: 7px !important;
+    margin-bottom: 0.15rem !important;
+  }
+
+  /* Phone rows */
+  #dept-contacts-container a {
+    padding: 0.35rem 0.45rem !important;
+    font-size: 0.7rem !important;
+    border-radius: 0.45rem !important;
+  }
+
+  /* Reduce vertical gaps */
+  #dept-contacts-container .space-y-4 {
+    gap: 0.4rem !important;
+  }
+
+  #dept-contacts-container .flex.flex-col.gap-2 {
+    gap: 0.3rem !important;
+  }
+}
+}
+/* =========================================
+   MOBILE: Smaller Offer Headings
+========================================= */
+@media (max-width: 639px) {
+
+  /* Offer main title */
+  #offers-grid h3 {
+    font-size: 0.8rem !important;   /* smaller than before */
+    line-height: 1.2 !important;
+    font-weight: 700;
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* Sub text like "Coming Soon" */
+  #offers-grid p {
+    font-size: 0.68rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Enquire Now */
+  #offers-grid span {
+    font-size: 0.65rem !important;
+  }
+}
+/* =========================================
+   MOBILE ONLY: Homepage Service Text Fix
+========================================= */
+@media (max-width: 639px) {
+
+  /* Service card title */
+  #view-home section.py-12 .grid > div h3,
+  #view-home section.py-12 .grid > a h3 {
+    font-size: 0.85rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* Description text */
+  #view-home section.py-12 .grid > div p,
+  #view-home section.py-12 .grid > a p {
+    font-size: 0.7rem !important;
+    line-height: 1.35 !important;
+    margin-bottom: 0.4rem !important;
+    color: #4b5563;
+  }
+
+  /* CTA text + arrow inline */
+  #view-home section.py-12 .grid > div a,
+  #view-home section.py-12 .grid > a {
+    font-size: 0.7rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Arrow icon size */
+  #view-home section.py-12 .grid > div a i,
+  #view-home section.py-12 .grid > a i,
+  #view-home section.py-12 .grid > div a svg,
+  #view-home section.py-12 .grid > a svg {
+    font-size: 0.7rem !important;
+    margin-top: 0 !important;
+  }
 }
