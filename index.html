@@ -38,7 +38,7 @@
             <i class="fab fa-whatsapp text-2xl"></i>
         </a>
         <div class="bg-honda-red text-white rounded-full shadow-lg flex flex-col items-center py-4 space-y-4 w-12 border-2 border-white">
-            <a href="https://share.google/xreKGgygcZ8tPCfe3" target="_blank" title="Locate Us" class="hover:text-gray-200 transition transform hover:scale-110"><i class="fas fa-map-marker-alt text-lg"></i></a>
+            <a href="https://share.google/xreKGgygcZ8tPCfe3" target="_blank" title="Locate Us" class="hover:text-gray-200 transition transform hover:scale-110"><i class="fas fa-share-alt text-lg"></i></a>
             <a href="tel:+919854092624" title="Call Us" class="hover:text-gray-200 transition transform hover:scale-110"><i class="fas fa-phone-alt text-lg"></i></a>
             <button onclick="openEnquiryModal('Test Ride')" title="Book Test Ride" class="hover:text-gray-200 transition transform hover:scale-110"><i class="fas fa-motorcycle text-lg"></i></button>
         </div>
@@ -61,6 +61,7 @@
                 <a href="#" onclick="switchPage('motorcycles')" class="nav-link hover:text-honda-red">Motorcycles</a>
                 <a href="#" onclick="switchPage('scooters')" class="nav-link hover:text-honda-red">Scooters</a>
                 
+                <!-- Services Link (No Dropdown) -->
                 <!-- Services Dropdown -->
                 <div class="relative group h-20 flex items-center cursor-pointer">
                     <span class="nav-link hover:text-honda-red flex items-center gap-1">
@@ -70,14 +71,18 @@
                         <a href="#" onclick="switchPage('service-shield')" class="block px-4 py-2 hover:bg-red-50 hover:text-honda-red transition text-sm">Honda Shield</a>
                         <a href="#" onclick="switchPage('service-oil')" class="block px-4 py-2 hover:bg-red-50 hover:text-honda-red transition text-sm">Genuine Engine Oil</a>
                         <a href="#" onclick="switchPage('service-parts')" class="block px-4 py-2 hover:bg-red-50 hover:text-honda-red transition text-sm">Genuine Parts</a>
+                        <a href="#" onclick="switchPage('service-accessories')"
+                            class="block px-4 py-2 hover:bg-red-50 hover:text-honda-red transition text-sm">
+                            Honda Accessories
+                            </a>
+
                         <div class="h-px bg-gray-100 my-1"></div>
-                        <a href="#" onclick="openEnquiryModal('Service Booking')" class="block px-4 py-2 hover:bg-red-50 hover:text-honda-red transition text-sm font-bold">Book Service</a>
-                    </div>
+                                            </div>
                 </div>
 
                 <a href="#" onclick="switchPage('offers')" class="nav-link hover:text-honda-red">Offers</a>
-                <a href="#" onclick="switchPage('dealer')" class="nav-link hover:text-honda-red font-bold text-gray-900">Dealer Network</a>
-                <a href="#" onclick="switchPage('about')" class="nav-link hover:text-honda-red">About Us</a>
+                <a href="#" onclick="switchPage('dealer')" class="nav-link hover:text-honda-red font-bold text-gray-900">Dealer network</a>
+                <a href="#" onclick="switchPage('about')" class="nav-link hover:text-honda-red">About us</a>
                 
                 <button onclick="openEnquiryModal('Contact Us')" class="bg-honda-red text-white px-6 py-2.5 rounded hover:bg-red-700 transition shadow-lg text-sm font-bold">Contact Us</button>
             </div>
@@ -93,8 +98,8 @@
             <a href="#" onclick="switchPage('scooters')">Scooters</a>
             <a href="#" onclick="switchPage('service-shield')">Services</a>
             <a href="#" onclick="switchPage('offers')">Offers</a>
-            <a href="#" onclick="switchPage('dealer')">Dealer Network</a>
-            <a href="#" onclick="switchPage('about')">About</a>
+            <a href="#" onclick="switchPage('dealer')">Dealer network</a>
+            <a href="#" onclick="switchPage('about')">About us</a>
         </div>
     </nav>
 
@@ -112,80 +117,164 @@
                 <!-- Overlay -->
                 <div class="absolute inset-0 bg-black/40 pointer-events-none"></div>
                 
-                <div class="relative z-10 container mx-auto px-4 text-white">
-                    <h1 class="text-5xl md:text-7xl font-display font-bold mb-4 leading-tight">THE POWER OF <br/><span class="text-honda-red">DREAMS</span></h1>
-                    <p class="text-lg text-gray-300 mb-8 max-w-lg">Your trusted authorized Honda dealership in Silchar.</p>
-                    <button onclick="switchPage('motorcycles')" class="px-8 py-3 bg-honda-red text-white rounded font-bold hover:bg-red-700 shadow-lg uppercase tracking-wide pointer-events-auto">View Models</button>
+                <div class="relative z-10 container mx-auto px-4 text-white text-center md:text-left">
+                    <h1 class="text-5xl md:text-7xl font-display font-bold mb-4 leading-tight">The Power of <br/><span class="text-honda-red">Dreams</span></h1>
+                    <p class="text-lg text-gray-300 mb-8 max-w-lg mx-auto md:mx-0">Your trusted authorized Honda dealership in Silchar.</p>
+                    <button onclick="scrollToModels()" class="px-8 py-3 bg-honda-red text-white rounded font-bold hover:bg-red-700 shadow-lg uppercase tracking-wide pointer-events-auto">View Models</button>
                 </div>
             </section>
 
-            <!-- Professional Services Section -->
-            <section class="py-20 bg-white relative -mt-16 z-20">
-                <div class="container mx-auto px-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <!-- Service 1: Exchange -->
-                        <div onclick="openEnquiryModal('Exchange')" class="bg-white p-8 rounded-xl shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer border-b-4 border-honda-red group">
-                            <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center text-honda-red mb-6 group-hover:bg-honda-red group-hover:text-white transition">
-                                <i class="fas fa-exchange-alt text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-display font-bold text-gray-900 mb-2">Exchange</h3>
-                            <p class="text-sm text-gray-500 mb-4">Upgrade to a new Honda. Best value for your old bike.</p>
-                            <span class="text-honda-red text-sm font-bold uppercase tracking-wide group-hover:underline">Get Valuation &rarr;</span>
-                        </div>
+            <!-- PROFESSIONAL OFFER CAROUSEL -->
+            <section id="hero-carousel-section" class="relative mt-6 z-30 mb-12 hidden container mx-auto px-4">
+                <div class="relative group max-w-5xl mx-auto">
+                    <!-- Button Left -->
+                    <button id="carousel-prev" class="absolute -left-4 md:-left-12 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-honda-red hover:text-white text-Red-800 w-10 h-10 flex items-center justify-center rounded-full shadow-lg border border-Red-100 transition-all duration-300 group-hover:scale-110">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
 
-                        <!-- Service 2: Finance -->
-                        <div onclick="switchPage('offers')" class="bg-white p-8 rounded-xl shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer border-b-4 border-blue-600 group">
-                            <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 mb-6 group-hover:bg-blue-600 group-hover:text-white transition">
-                                <i class="fas fa-percent text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-display font-bold text-gray-900 mb-2">Finance & Offers</h3>
-                            <p class="text-sm text-gray-500 mb-4">Low down payment and easy EMI options available.</p>
-                            <span class="text-blue-600 text-sm font-bold uppercase tracking-wide group-hover:underline">Check Offers &rarr;</span>
+                    <!-- Track Container -->
+                    <div class="overflow-hidden rounded-xl shadow-2xl border-4 border-white bg-white">
+                        <div id="hero-carousel-track" class="flex transition-transform duration-500 ease-out">
+                            <!-- Slides injected by JS -->
                         </div>
+                    </div>
 
-                        <!-- Service 3: Service -->
-                        <div onclick="openEnquiryModal('Service Booking')" class="bg-white p-8 rounded-xl shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer border-b-4 border-gray-800 group">
-                            <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center text-gray-800 mb-6 group-hover:bg-gray-800 group-hover:text-white transition">
-                                <i class="fas fa-tools text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-display font-bold text-gray-900 mb-2">Book Service</h3>
-                            <p class="text-sm text-gray-500 mb-4">Genuine parts and expert technicians for your bike.</p>
-                            <span class="text-gray-800 text-sm font-bold uppercase tracking-wide group-hover:underline">Schedule Now &rarr;</span>
-                        </div>
-
-                        <!-- Service 4: Insurance -->
-                        <div onclick="openEnquiryModal('Insurance Renewal')" class="bg-white p-8 rounded-xl shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer border-b-4 border-green-600 group">
-                            <div class="w-14 h-14 bg-green-50 rounded-full flex items-center justify-center text-green-600 mb-6 group-hover:bg-green-600 group-hover:text-white transition">
-                                <i class="fas fa-shield-alt text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-display font-bold text-gray-900 mb-2">Insurance</h3>
-                            <p class="text-sm text-gray-500 mb-4">Renew your policy or file a cashless claim easily.</p>
-                            <span class="text-green-600 text-sm font-bold uppercase tracking-wide group-hover:underline">Renew Policy &rarr;</span>
-                        </div>
+                    <!-- Button Right -->
+                    <button id="carousel-next" class="absolute -right-4 md:-right-12 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-honda-red hover:text-white text-gray-800 w-10 h-10 flex items-center justify-center rounded-full shadow-lg border border-gray-100 transition-all duration-300 group-hover:scale-110">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    
+                    <!-- Navigation Dots -->
+                    <div id="carousel-dots" class="flex justify-center gap-2 mt-4">
+                        <!-- Dots injected by JS -->
                     </div>
                 </div>
             </section>
 
+            <!-- Professional Services Section -->
+                                        <section class="py-12 bg-white relative z-20">
+                        <div class="container mx-auto px-4">
+                            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                            <!-- Service 1: Exchange -->
+                            <div onclick="openEnquiryModal('Exchange')" 
+                                class="bg-white p-4 sm:p-8 rounded-xl shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer border-b-4 border-honda-red group">
+
+                                <div class="w-10 h-10 sm:w-14 sm:h-14 bg-red-50 rounded-full flex items-center justify-center 
+                                            text-honda-red mb-4 sm:mb-6 group-hover:bg-honda-red group-hover:text-white transition">
+                                <i class="fas fa-exchange-alt text-base sm:text-2xl"></i>
+                                </div>
+
+                                <h3 class="text-[13px] sm:text-xl font-display font-bold text-gray-900 mb-1 sm:mb-2">
+                                Exchange
+                                </h3>
+
+                                <p class="text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-4 leading-relaxed">
+                                Upgrade to a new Honda. Best value for your old bike.
+                                </p>
+
+                                <span class="text-honda-red text-[11px] sm:text-sm font-bold uppercase tracking-wide 
+                                            inline-flex items-center gap-1 group-hover:underline">
+                                Get Valuation <span>→</span>
+                                </span>
+                            </div>
+
+                            <!-- Service 2: Finance -->
+                            <div onclick="switchPage('offers')" 
+                                class="bg-white p-4 sm:p-8 rounded-xl shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer border-b-4 border-blue-600 group">
+
+                                <div class="w-10 h-10 sm:w-14 sm:h-14 bg-blue-50 rounded-full flex items-center justify-center 
+                                            text-blue-600 mb-4 sm:mb-6 group-hover:bg-blue-600 group-hover:text-white transition">
+                                <i class="fas fa-percent text-base sm:text-2xl"></i>
+                                </div>
+
+                                <h3 class="text-[13px] sm:text-xl font-display font-bold text-gray-900 mb-1 sm:mb-2">
+                                Finance & Offers
+                                </h3>
+
+                                <p class="text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-4 leading-relaxed">
+                                Low down payment and easy EMI options available.
+                                </p>
+
+                                <span class="text-blue-600 text-[11px] sm:text-sm font-bold uppercase tracking-wide 
+                                            inline-flex items-center gap-1 group-hover:underline">
+                                Check Offers <span>→</span>
+                                </span>
+                            </div>
+
+                            <!-- Service 3: Book Service -->
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSe4oGBHswLHaM62Log5seKShZzUPeb2eekEiTOKNuWaHk1gxQ/viewform"
+                                target="_blank"
+                                class="bg-white p-4 sm:p-8 rounded-xl shadow-xl hover:-translate-y-1 transition duration-300 
+                                        cursor-pointer border-b-4 border-gray-800 group block">
+
+                                <div class="w-10 h-10 sm:w-14 sm:h-14 bg-gray-100 rounded-full flex items-center justify-center 
+                                            text-gray-800 mb-4 sm:mb-6 group-hover:bg-gray-800 group-hover:text-white transition">
+                                <i class="fas fa-calendar-check text-base sm:text-2xl"></i>
+                                </div>
+
+                                <h3 class="text-[13px] sm:text-xl font-display font-bold text-gray-900 mb-1 sm:mb-2">
+                                Book Service
+                                </h3>
+
+                                <p class="text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-4 leading-relaxed">
+                                Schedule your service appointment online easily.
+                                </p>
+
+                                <span class="text-gray-800 text-[11px] sm:text-sm font-bold uppercase tracking-wide 
+                                            inline-flex items-center gap-1 group-hover:underline">
+                                Book Now <span>→</span>
+                                </span>
+                            </a>
+
+                            <!-- Service 4: Insurance -->
+                            <div onclick="openEnquiryModal('Insurance Renewal')" 
+                                class="bg-white p-4 sm:p-8 rounded-xl shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer border-b-4 border-green-600 group">
+
+                                <div class="w-10 h-10 sm:w-14 sm:h-14 bg-green-50 rounded-full flex items-center justify-center 
+                                            text-green-600 mb-4 sm:mb-6 group-hover:bg-green-600 group-hover:text-white transition">
+                                <i class="fas fa-shield-alt text-base sm:text-2xl"></i>
+                                </div>
+
+                                <h3 class="text-[13px] sm:text-xl font-display font-bold text-gray-900 mb-1 sm:mb-2">
+                                Insurance
+                                </h3>
+
+                                <p class="text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-4 leading-relaxed">
+                                Renew your policy or file a cashless claim easily.
+                                </p>
+
+                                <span class="text-green-600 text-[11px] sm:text-sm font-bold uppercase tracking-wide 
+                                            inline-flex items-center gap-1 group-hover:underline">
+                                Renew Policy <span>→</span>
+                                </span>
+                            </div>
+
+                            </div>
+                        </div>
+                        </section>
+                                                                         
+
             <!-- Category Selection -->
-            <section class="py-16 bg-gray-50">
+            <section id="explore-models" class="py-16 bg-gray-50">
                 <div class="container mx-auto px-4 text-center mb-12">
-                    <h2 class="text-3xl font-display font-bold text-gray-900">EXPLORE <span class="text-honda-red">MODELS</span></h2>
+                    <h2 class="text-3xl font-display font-bold text-gray-900">Explore <span class="text-honda-red">Models</span></h2>
                 </div>
-                <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="container mx-auto px-4 grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8">
                     <div onclick="switchPage('motorcycles')" class="relative h-72 rounded-2xl overflow-hidden cursor-pointer group bg-black shadow-lg">
                         <img src="motorcyles.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition duration-500" onerror="this.src='https://placehold.co/800x600?text=Motorcycles'">
                         <div class="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/90 to-transparent">
-                            <h3 class="text-3xl font-display font-bold text-white mb-1">Motorcycles</h3>
-                            <p class="text-gray-300 text-sm mb-4">Performance & Efficiency</p>
-                            <span class="text-honda-red font-bold text-xs uppercase bg-white px-4 py-2 rounded-full">View All &rarr;</span>
+                            <h3 class="text-lg sm:text-3xl font-bold text-white">Motorcycles</h3>
+                            <p class="text-gray-300 text-xs sm:text-sm mb-3 sm:mb-4">Performance & Efficiency</p>
+                            <span class="text-xs sm:text-sm font-bold inline-flex items-center gap-1 bg-white text-red-600 px-4 py-2 rounded-full">View All &rarr;</span>
                         </div>
                     </div>
                     <div onclick="switchPage('scooters')" class="relative h-72 rounded-2xl overflow-hidden cursor-pointer group bg-black shadow-lg">
                         <img src="dio125.jpg" class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition duration-500" onerror="this.src='https://placehold.co/800x600?text=Scooters'">
                         <div class="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/90 to-transparent">
-                            <h3 class="text-3xl font-display font-bold text-white mb-1">Scooters</h3>
-                            <p class="text-gray-300 text-sm mb-4">Comfort & Convenience</p>
-                            <span class="text-honda-red font-bold text-xs uppercase bg-white px-4 py-2 rounded-full">View All &rarr;</span>
+                            <h3 class="text-lg sm:text-3xl font-bold text-white">Scooters</h3>
+                            <p class="text-gray-300 text-xs sm:text-sm mb-3 sm:mb-4">Comfort & Convenience</p>
+                            <span class="text-xs sm:text-sm font-bold inline-flex items-center gap-1 bg-white text-red-600 px-4 py-2 rounded-full">View All &rarr;</span>
                         </div>
                     </div>
                 </div>
@@ -203,7 +292,9 @@
                 </div>
             </div>
             <div class="container mx-auto px-4 md:px-8">
-                <div id="motorcycle-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+                <div id="motorcycle-grid"
+                class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                </div>
             </div>
         </div>
 
@@ -216,7 +307,9 @@
                 </div>
             </div>
             <div class="container mx-auto px-4 md:px-8">
-                <div id="scooter-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+               <div id="scooter-grid"
+                    class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                    </div>
             </div>
         </div>
 
@@ -224,18 +317,21 @@
         <div id="view-dealer" class="view-section hidden py-20 bg-white page-enter">
             <div class="container mx-auto px-4 max-w-6xl">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl font-display font-bold text-gray-900">OUR <span class="text-honda-red">NETWORK</span></h2>
-                    <p class="text-gray-500 mt-2">Our Authorized Sales and Service Partners across Barak Valley.</p>
+                    <h2 class="text-3xl font-display font-bold text-gray-900">Our <span class="text-honda-red">Network</span></h2>
+                    <p class="text-gray-500 mt-2">Our Authorized Sales and Service partners across Barak Valley.</p>
                 </div>
                 <div id="dealers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
             </div>
         </div>
 
-        <!-- VIEW: OFFERS -->
+         <!-- VIEW: OFFERS -->
         <div id="view-offers" class="view-section hidden py-20 bg-gray-50 page-enter">
             <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl font-display font-bold text-gray-900 mb-12">EXCLUSIVE <span class="text-honda-red">OFFERS</span></h2>
-                <div id="offers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"></div>
+                <h2 class="text-3xl font-display font-bold text-gray-900 mb-12">Exclusive <span class="text-honda-red">Offers</span></h2>
+                <div
+                        id="offers-grid"
+                                class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
+                                    </div>
             </div>
         </div>
 
@@ -245,7 +341,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <div>
                         <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">HONDA <span class="text-honda-red">SHIELD</span></h2>
-                        <p class="text-lg text-gray-600 mb-6">Honda Shield is an extended warranty program that offers you peace of mind for up to 6 years. It covers major engine components and essential electrical parts against manufacturing defects.</p>
+                        <p class="text-lg text-gray-600 mb-6">Honda Shield is an Extended Earranty Program that Offers you peace of mind for up to 6 years. It covers major engine components and essential electrical parts against manufacturing defects.</p>
                         <button onclick="openEnquiryModal('Service Booking')" class="bg-honda-red text-white px-8 py-3 rounded font-bold shadow-lg hover:bg-red-700 transition">Enquire Now</button>
                     </div>
                     <div class="bg-white p-8 rounded-2xl shadow-xl">
@@ -257,7 +353,7 @@
         
         <div id="view-service-oil" class="view-section hidden py-20 bg-white page-enter">
             <div class="container mx-auto px-4 text-center max-w-3xl">
-                <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">GENUINE <span class="text-honda-red">OIL</span></h2>
+                <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">Genuine <span class="text-honda-red">Oil</span></h2>
                 <p class="text-lg text-gray-600 mb-8">Keep your engine young and powerful. Honda Genuine Oil (10W30 MA) is specifically formulated for high-performance Honda engines.</p>
                 <div class="mb-8 max-w-md mx-auto">
                     <img id="img-service-oil" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Oil" class="w-full rounded-lg shadow-md">
@@ -268,7 +364,7 @@
 
         <div id="view-service-parts" class="view-section hidden py-20 bg-white page-enter">
             <div class="container mx-auto px-4 text-center max-w-3xl">
-                <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">GENUINE <span class="text-honda-red">PARTS</span></h2>
+                <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">Genuine <span class="text-honda-red">parts</span></h2>
                 <p class="text-lg text-gray-600 mb-8">Don't compromise on safety. Use only 100% Honda Genuine Parts designed to fit perfectly and last longer.</p>
                 <div class="mb-8 max-w-md mx-auto">
                     <img id="img-service-parts" src="https://placehold.co/600x400/f8f9fa/cc0000?text=Genuine+Parts" class="w-full rounded-lg shadow-md">
@@ -277,142 +373,347 @@
             </div>
         </div>
 
-        <!-- VIEW: ABOUT -->
-        <div id="view-about" class="view-section hidden py-20 bg-white page-enter">
-            <div class="container mx-auto px-4 max-w-5xl">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl font-display font-bold mb-6 text-gray-900">About Harish Honda</h2>
-                    <p class="text-xl text-gray-600 leading-relaxed mb-8">
-                        Welcome to Harish Honda, your premier authorized Honda two-wheeler dealership in Silchar, Assam. Since our inception, we have been dedicated to providing the joy of riding to our customers through Honda's world-class products.
-                    </p>
+                    <!-- VIEW: ACCESSORIES -->
+            <div id="view-service-accessories" class="view-section hidden py-20 bg-white page-enter">
+            <div class="container mx-auto px-4 text-center max-w-3xl">
+                <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">
+                Honda <span class="text-honda-red">Accessories</span>
+                </h2>
+
+                <p class="text-lg text-gray-600 mb-8">
+                Enhance your ride with genuine Honda accessories designed for style, safety, and comfort.
+                </p>
+
+                <div class="mb-8 max-w-md mx-auto">
+                <img
+                    id="img-service-accessories"
+                    src="https://placehold.co/600x400?text=Honda+Accessories"
+                    class="w-full rounded-2xl shadow-xl cursor-zoom-in"
+                    alt="Honda Accessories">
                 </div>
 
-                <!-- DEPARTMENT CONTACTS (Added Manually Here) -->
-                <div class="mt-16 mb-16" id="dept-contacts-container">
-                    <h3 class="text-2xl font-display font-bold text-gray-900 mb-8 text-center">Department <span class="text-honda-red">CONTACTS</span></h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+                <button
+                onclick="openEnquiryModal('Accessories Booking')"
+                class="bg-honda-red text-white px-8 py-3 rounded font-bold hover:bg-red-700 transition">
+                Enquire Accessories
+                </button>
+            </div>
+            </div>
+
+
+        <!-- VIEW: ABOUT -->
+        <div id="view-about" class="view-section hidden py-20 bg-white page-enter">
+            <div class="container mx-auto px-4 max-w-6xl">
+                <!-- Professional Welcome Header -->
+                <div class="text-center mb-16 md:mb-20">
+                    <h1 class="text-4xl md:text-6xl font-display font-bold text-gray-900 mb-4">Welcome To <span class="text-honda-red">Harish Honda</span></h1>
+                    <div class="w-24 h-1 bg-honda-red mx-auto mb-6"></div>
+                    
+
+                                    <!-- About Header -->
+                        <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-center mb-16 md:mb-20">
+
+                            <!-- LEFT CONTENT -->
+                            <div class="md:w-1/2 text-center md:text-left">
+                                <h2 class="text-[10px] md:text-xs font-bold text-honda-red uppercase tracking-[0.3em] mb-3 md:mb-4">
+                                    Our Legacy
+                                </h2>
+
+                                <h3 id="showroom-title"
+                                    class="text-3xl md:text-5xl font-display font-bold mb-5 md:mb-6 text-gray-900 leading-tight">
+                                    Redefining Mobility in <span class="text-honda-red">Silchar</span> Since 2005
+                                </h3>
+
+                                <p id="showroom-desc"
+                                class="text-base md:text-lg text-gray-600 leading-relaxed mb-5 md:mb-6">
+                                    For nearly two decades, Harish Honda has stood as a beacon of trust and engineering excellence in Assam.
+                                    We don't just sell motorcycles; we deliver the "Power of Dreams" to every rider in Barak Valley.
+                                </p>
+
+                                <p class="text-base md:text-lg text-gray-600 leading-relaxed">
+                                    Our commitment goes far beyond the showroom floor. From world-class service centers to 100% genuine parts
+                                    and expert technical guidance, we ensure that every rider enjoys a journey that is seamless, safe, and exhilarating.
+                                </p>
+                            </div>
+
+                            <!-- RIGHT IMAGE CAROUSEL -->
+                            <div class="relative w-full md:w-1/2 h-[260px] md:h-[350px] rounded-2xl shadow-xl overflow-hidden">
+
+                                <!-- Decorative pulse -->
+                                <div class="absolute -top-4 -left-4 w-16 h-16 md:w-24 md:h-24 bg-red-50 -z-10 rounded-full animate-pulse"></div>
+
+                                <!-- Images -->
+                                <img class="carousel-img absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-700"
+                                    src="https://i.ibb.co/SXt9qz8z/unikcorn-2.png"
+                                    alt="Harish Honda Showroom">
+
+                                <img class="carousel-img absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700"
+                                    src="https://i.ibb.co/WNfC68DB/Unicorn-3.png"
+                                    alt="Harish Honda Showroom">
+
+                                <img class="carousel-img absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700"
+                                    src="https://i.ibb.co/twBK1HKp/sp125-Anniversary.png"
+                                    alt="Harish Honda Showroom">
+
+                                <img class="carousel-img absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700"
+                                    src="https://i.ibb.co/0R1bs6DB/Shine-5.png"
+                                    alt="Harish Honda Showroom">
+
+                            </div>
+                        </div>
+
+                <!-- DEPARTMENT CONTACTS -->
+                <div class="mt-12 md:mt-16 mb-12 md:mb-16" id="dept-contacts-container">
+                    <h3 class="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-8 md:mb-10 text-center">Department <span class="text-honda-red">Contacts</span></h3>
+                    <!-- Ultra-Professional Grid with all original details -->
+                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6 text-left">
                         <!-- Sales -->
-                        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-honda-red hover:shadow-md transition-shadow">
-                            <h4 class="font-bold text-lg mb-3 flex items-center text-gray-900"><i class="fas fa-tag text-honda-red mr-3"></i> Sales</h4>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex justify-between">
-                                    <span class="font-semibold">Showroom:</span>
-                                     <span>
-                                     <a href="tel:9854092624" class="hover:text-honda-red">9854092624</a> |
-                                         <a href="tel:9854092601" class="hover:text-honda-red">9854092601</a>
-                                             </span>
-                                                </li>
-                                <li class="flex justify-between"><span class="font-semibold">Sales Manager:</span> <a href="tel:9854092603" class="hover:text-honda-red">9854092603</a></li>
-                                                           
+                        <div class="bg-white p-5 md:p-6 rounded-2xl border border-gray-100 shadow-sm hover:border-honda-red/30 transition-all flex flex-col h-full">
+                            <h4 class="font-bold text-base md:text-lg mb-4 flex items-center text-gray-900">
+                                <i class="fas fa-tag text-honda-red mr-3"></i> Sales
+                            </h4>
+                            <div class="space-y-4 flex-grow">
+                                <div>
+                                    <span class="font-bold text-gray-900 block mb-2 uppercase text-[9px] tracking-widest opacity-50">Showroom</span>
+                                    <div class="flex flex-col gap-2">
+                                        <a href="tel:9854092624" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-honda-red/5 hover:text-honda-red transition-colors group">
+                                            <span class="font-semibold text-xs md:text-sm">9854092624</span>
+                                            <i class="fas fa-phone-alt text-[10px] opacity-30 group-hover:opacity-100"></i>
+                                        </a>
+                                        <a href="tel:9854092601" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-honda-red/5 hover:text-honda-red transition-colors group">
+                                            <span class="font-semibold text-xs md:text-sm">9854092601</span>
+                                            <i class="fas fa-phone-alt text-[10px] opacity-30 group-hover:opacity-100"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-gray-900 block mb-2 uppercase text-[9px] tracking-widest opacity-50 text-nowrap">Sales Manager</span> 
+                                    <a href="tel:9854092603" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-honda-red/5 hover:text-honda-red transition-colors group">
+                                        <span class="font-semibold text-xs md:text-sm">9854092603</span>
+                                        <i class="fas fa-user-tie text-[10px] opacity-30 group-hover:opacity-100"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Service -->
-                        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-gray-800 hover:shadow-md transition-shadow w-[420px]">
-                            <h4 class="font-bold text-lg mb-3 flex items-center text-gray-900"><i class="fas fa-wrench text-gray-800 mr-3"></i> Service</h4>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                 <li class="flex justify-between">
-                                    <span class="font-semibold">Service Booking:</span>
-                                     <span>
-                                     <a href="tel:9854092602" class="hover:text-honda-red">9854092602</a> |
-                                         <a href="tel:9854092632" class="hover:text-honda-red">9854092632</a>
-                                             </span>
-                                                </li>
-                               
-                                <li class="flex justify-between"><span class="font-semibold">Customer Relationship Manager:</span> <a href="tel:9854092635" class="hover:text-honda-red">9854092635</a></li>
-                                <li class="flex justify-between"><span class="font-semibold">Service Manager:</span> <a href="tel:9854092605" class="hover:text-honda-red">9854092605</a></li>
-                            </ul>
+                        <div class="bg-white p-5 md:p-6 rounded-2xl border border-gray-100 shadow-sm hover:border-gray-800/30 transition-all flex flex-col h-full">
+                            <h4 class="font-bold text-base md:text-lg mb-4 flex items-center text-gray-900">
+                                <i class="fas fa-wrench text-gray-800 mr-3"></i> Service
+                            </h4>
+                            <div class="space-y-4 flex-grow">
+                                <div>
+                                    <span class="font-bold text-gray-900 block mb-2 uppercase text-[9px] tracking-widest opacity-50">Booking</span>
+                                    <div class="flex flex-col gap-2">
+                                        <a href="tel:9854092602" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-gray-800/5 hover:text-gray-900 transition-colors group">
+                                            <span class="font-semibold text-xs md:text-sm">9854092602</span>
+                                            <i class="fas fa-calendar-alt text-[10px] opacity-30 group-hover:opacity-100"></i>
+                                        </a>
+                                        <a href="tel:9854092632" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-gray-800/5 hover:text-gray-900 transition-colors group">
+                                            <span class="font-semibold text-xs md:text-sm">9854092632</span>
+                                            <i class="fas fa-calendar-alt text-[10px] opacity-30 group-hover:opacity-100"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-gray-900 block mb-2 uppercase text-[9px] tracking-widest opacity-50">Customer Care</span> 
+                                    <a href="tel:9854092635" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-gray-800/5 hover:text-gray-900 transition-colors group">
+                                        <span class="font-semibold text-xs md:text-sm">9854092635</span>
+                                        <i class="fas fa-headset text-[10px] opacity-30 group-hover:opacity-100"></i>
+                                    </a>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-gray-900 block mb-2 uppercase text-[9px] tracking-widest opacity-50 text-nowrap">Service Manager</span> 
+                                    <a href="tel:9854092605" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-gray-800/5 hover:text-gray-900 transition-colors group">
+                                        <span class="font-semibold text-xs md:text-sm">9854092605</span>
+                                        <i class="fas fa-user-tie text-[10px] opacity-30 group-hover:opacity-100"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-
+                        
+                        <!-- Parts -->
+                        <div class="bg-white p-5 md:p-6 rounded-2xl border border-gray-100 shadow-sm hover:border-yellow-500/30 transition-all flex flex-col h-full">
+                            <h4 class="font-bold text-base md:text-lg mb-4 flex items-center text-gray-900">
+                                <i class="fas fa-cogs text-yellow-500 mr-3"></i> Parts
+                            </h4>
+                            <div class="space-y-4 flex-grow">
+                                <div>
+                                    <span class="font-bold text-gray-900 block mb-2 uppercase text-[9px] tracking-widest opacity-50 text-nowrap">Parts Manager</span> 
+                                    <a href="tel:9854092633" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-yellow-500/5 hover:text-yellow-700 transition-colors group">
+                                        <span class="font-semibold text-xs md:text-sm">9854092633</span>
+                                        <i class="fas fa-user-tie text-[10px] opacity-30 group-hover:opacity-100"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     
                         <!-- Insurance -->
-                        <div class="bg-gray-50 p-5 rounded-lg border-l-4 border-green-600 hover:shadow-md transition-shadow ml-28">
-                            <h4 class="font-bold text-lg mb-3 flex items-center text-gray-900"><i class="fas fa-shield-alt text-green-600 mr-3"></i> Insurance</h4>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex justify-between"><span class="font-semibold">Insurance:</span> <a href="tel:9854092623" class="hover:text-honda-red">9854092623</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Parts -->
-                        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-yellow-500 hover:shadow-md transition-shadow">
-                            <h4 class="font-bold text-lg mb-3 flex items-center text-gray-900"><i class="fas fa-cogs text-yellow-500 mr-3"></i> Parts</h4>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex justify-between"><span class="font-semibold">Parts Manager:</span> <a href="tel:9854092633" class="hover:text-honda-red">9854092633</a></li>
-                            </ul>
+                        <div class="bg-white p-5 md:p-6 rounded-2xl border border-gray-100 shadow-sm hover:border-green-600/30 transition-all flex flex-col h-full">
+                            <h4 class="font-bold text-base md:text-lg mb-4 flex items-center text-gray-900">
+                                <i class="fas fa-shield-alt text-green-600 mr-3"></i> Insurance & Registration
+                            </h4>
+                            <div class="space-y-4 flex-grow">
+                                <div>
+                                    <span class="font-bold text-gray-900 block mb-2 uppercase text-[9px] tracking-widest opacity-50">Executive</span> 
+                                    <a href="tel:9854092623" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-green-600/5 hover:text-green-700 transition-colors group">
+                                        <span class="font-semibold text-xs md:text-sm">9854092623</span>
+                                        <i class="fas fa-file-invoice text-[10px] opacity-30 group-hover:opacity-100"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                    <div class="bg-gray-50 p-8 rounded-xl text-center border border-gray-100">
-                        <h3 class="text-4xl font-bold text-honda-red mb-2 font-display">4.7/5</h3>
-                        <p class="font-medium text-gray-900">Customer Rating</p>
+                                <!-- MOBILE SPLIT: Stats (Left) + Map (Right) -->
+                    <div class="grid grid-cols-2 md:grid-cols-1 gap-4 md:gap-0">
+
+                <!-- LEFT SIDE: STAT BADGES -->
+                <div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-8 mb-0 md:mb-16">
+
+                    <div class="bg-gray-50 p-4 md:p-8 rounded-xl md:rounded-3xl text-center border border-gray-100 group hover:bg-white hover:shadow-xl transition duration-300">
+                        <h3 class="text-2xl md:text-4xl font-bold text-honda-red mb-1 md:mb-2 font-display">
+                        4.7/5
+                        </h3>
+                        <p class="font-medium text-gray-900 tracking-wider uppercase text-[8px] md:text-xs">
+                        Customer Rating
+                        </p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-xl text-center border border-gray-100">
-                        <h3 class="text-4xl font-bold text-honda-red mb-2 font-display">20+</h3>
-                        <p class="font-medium text-gray-900">Years Experience</p>
+
+                    <div class="bg-gray-50 p-4 md:p-8 rounded-xl md:rounded-3xl text-center border border-gray-100 group hover:bg-white hover:shadow-xl transition duration-300">
+                        <h3 class="text-2xl md:text-4xl font-bold text-honda-red mb-1 md:mb-2 font-display">
+                        20+
+                        </h3>
+                        <p class="font-medium text-gray-900 tracking-wider uppercase text-[8px] md:text-xs">
+                        Years Experience
+                        </p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-xl text-center border border-gray-100">
-                        <h3 class="text-4xl font-bold text-honda-red mb-2 font-display">1 Lakh+</h3>
-                        <p class="font-medium text-gray-900">Happy Customers</p>
+
+                    <div class="bg-gray-50 p-4 md:p-8 rounded-xl md:rounded-3xl text-center border border-gray-100 group hover:bg-white hover:shadow-xl transition duration-300 sm:col-span-1">
+                        <h3 class="text-2xl md:text-4xl font-bold text-honda-red mb-1 md:mb-2 font-display">
+                        1 Lakh+
+                        </h3>
+                        <p class="font-medium text-gray-900 tracking-wider uppercase text-[8px] md:text-xs">
+                        Happy Customers
+                        </p>
+                    </div>
+
                     </div>
                 </div>
 
-                <!-- Google Map -->
-                <div class="h-96 bg-gray-200 rounded-xl overflow-hidden shadow-inner mt-12">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.835786543214!2d92.8017584!3d24.8039733!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x374e4a3f21eebf41%3A0xacb25671c058e9f4!2sHarish%20Honda!5e0!3m2!1sen!2sin!4v1716458000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                <!-- RIGHT SIDE: GOOGLE MAP -->
+                <div>
+                    <div class="h-[260px] md:h-[450px] bg-gray-200 rounded-2xl md:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl border-4 md:border-8 border-white">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.835786543214!2d92.8017584!3d24.8039733!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x374e4a3f21eebf41%3A0xacb25671c058e9f4!2sHarish%20Honda!5e0!3m2!1sen!2sin!4v1716458000000!5m2!1sen!2sin"
+                        width="100%"
+                        height="100%"
+                        style="border:0;"
+                        allowfullscreen
+                        loading="lazy">
+                    </iframe>
+                    </div>
                 </div>
-            </div>
-        </div>
+
+                </div>
+
 
     </main>
 
     <!-- Footer -->
     <footer class="bg-honda-dark text-white pt-16 pb-8 border-t-4 border-honda-red">
         <div class="container mx-auto px-4 md:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                <div class="col-span-1">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 mb-12">
+                
+                <!-- Brand Info -->
+                <div class="col-span-2 lg:col-span-1">
                     <div class="flex items-center mb-6">
-                        
-                        <span class="font-display font-bold text-xl">Harish Honda</span>
+                        <span class="font-display font-bold text-xl tracking-wider">Harish Honda</span>
                     </div>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Authorized Main Dealer for Honda Motorcycle & Scooter India Pvt. Ltd. Serving Silchar with trust.</p>
-                    <div id="social-links-container" class="flex space-x-4 mt-6"></div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Authorized Main Dealer for Honda Motorcycle & Scooter India Pvt. Ltd. Serving Silchar with trust and excellence.</p>
+                    <div id="social-links-container" class="flex space-x-5 mt-6"></div>
                 </div>
-                <div>
-                    <h3 class="font-display font-bold text-lg mb-6 tracking-wide">Quick Links</h3>
+
+                <!-- Quick Links -->
+                <div class="col-span-1">
+                    <h3 class="font-display font-bold text-base mb-6 tracking-widest text-honda-red lg:text-white ">Explore</h3>
                     <ul class="space-y-3 text-sm text-gray-400">
                         <li><a href="#" onclick="switchPage('motorcycles')" class="hover:text-white transition">Motorcycles</a></li>
                         <li><a href="#" onclick="switchPage('scooters')" class="hover:text-white transition">Scooters</a></li>
-                        <li><a href="#" onclick="switchPage('about')" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="#" onclick="switchPage('about')" class="hover:text-white transition">About us</a></li>
+                        <li><a href="#" onclick="switchPage('offers')" class="hover:text-white transition">Offers</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h3 class="font-display font-bold text-lg mb-6 tracking-wide">Contact</h3>
-                    <ul class="space-y-4 text-sm text-gray-400">
-                 <li class="flex items-start"><i class="fas fa-map-marker-alt w-5 mt-1 text-honda-red"></i><span>Sonai Road, Near Tribeni Filling Station, Kanakpur, Silchar, Assam 788006</span></li>
-                        <li class="flex items-center"><i class="fas fa-phone w-5 text-honda-red"></i><span>Showroom: 9854092624, 9854092601
-                       </span></li>
-                        <li class="flex items-center"><i class="fas fa-phone w-5 text-honda-red"></i><span>
-                        Workshop: 9854092602, 9854092632</span></li>
+
+                <!-- Hours -->
+                <div class="col-span-1">
+                    <h3 class="font-display font-bold text-base mb-6 tracking-widest text-honda-red lg:text-white">Hours</h3>
+                    <ul class="space-y-3 text-xs md:text-sm text-gray-400">
+                        <li class="flex flex-col sm:flex-row sm:justify-between border-b border-gray-800 pb-2">
+                            <span class="opacity-60">Monday - Saturday</span>
+                            <span class="text-white font-medium text-nowrap">9:00 AM - 7:00 PM</span>
+                        </li>
+                        <li class="flex flex-col sm:flex-row sm:justify-between border-b border-gray-800 pb-2">
+                            <span class="opacity-60">Sunday</span>
+                            <span class="text-white font-medium text-nowrap">9:00 AM - 6:30 PM</span>
+                        </li>
                     </ul>
                 </div>
-                <div>
-                    <h3 class="font-display font-bold text-lg mb-6 tracking-wide">Hours</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li class="flex justify-between border-b border-gray-800 pb-2"><span>Mon - Sat</span><span class="text-white">9:00 AM - 7:00 PM</span></li>
-                        <li class="flex justify-between border-b border-gray-800 pb-2"><span>Sunday</span><span class="text-white">9:00 AM - 6:30 PM</span></li>
+
+                <!-- Contact with professional buttons and correct details -->
+                <div class="col-span-2 lg:col-span-1 pt-6 lg:pt-0 border-t border-gray-800 lg:border-t-0">
+                    <h3 class="font-display font-bold text-base mb-6 tracking-widest text-honda-red lg:text-white  text-center lg:text-left text-nowrap">Connect With Us</h3>
+                    <ul class="space-y-6 text-sm text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-honda-red shrink-0"></i>
+                            <span class="leading-relaxed text-xs">Sonai Road, Near Tribeni Filling Station, Kanakpur, Silchar, Assam 788006</span>
+                        </li>
+                        <!-- Showroom Contacts -->
+                        <div>
+                            <span class="text-[11px] tracking-widest text-white/40 font-bold block mb-2">Showroom Contacts</span>
+                            <div class="grid grid-cols-2 gap-2">
+                                <a href="tel:9854092624" class="bg-white/5 border border-white/10 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-honda-red/20 transition group">
+                                    <i class="fas fa-phone-alt text-[10px] text-honda-red"></i>
+                                    <span class="text-[10px] font-semibold text-white">9854092624</span>
+                                </a>
+                                <a href="tel:9854092601" class="bg-white/5 border border-white/10 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-honda-red/20 transition group">
+                                    <i class="fas fa-phone-alt text-[10px] text-honda-red"></i>
+                                    <span class="text-[10px] font-semibold text-white">9854092601</span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Workshop Contacts -->
+                        <div>
+                            <span class="text-[11px] tracking-widest text-white/40 font-bold block mb-2">Workshop Contacts</span>
+                            <div class="grid grid-cols-2 gap-2">
+                                <a href="tel:9854092602" class="bg-white/5 border border-white/10 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-700 transition group">
+                                    <i class="fas fa-tools text-[10px] text-honda-red"></i>
+                                    <span class="text-[10px] font-semibold text-white">9854092602</span>
+                                </a>
+                                <a href="tel:9854092632" class="bg-white/5 border border-white/10 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-700 transition group">
+                                    <i class="fas fa-tools text-[10px] text-honda-red"></i>
+                                    <span class="text-[10px] font-semibold text-white">9854092632</span>
+                                </a>
+                            </div>
+                        </div>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-xs text-gray-500">
+
+            <!-- Copyright Area -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-gray-500  tracking-widest">
                 <p>&copy; 2025 Harish Honda. All Rights Reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                </div>
             </div>
         </div>
     </footer>
 
     <!-- MODALS -->
-    
-    <!-- Enquiry Modal -->
     <div id="enquiry-modal" class="fixed inset-0 z-[150] hidden overflow-y-auto backdrop-blur-sm bg-black/50 flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 relative animate-in zoom-in duration-200">
             <button onclick="closeEnquiryModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
@@ -432,13 +733,11 @@
                     <option value="Contact Us">Contact Us</option>
                     <option value="Parts Booking">Parts Booking</option>
                 </select>
-                
                 <div id="model-select-container" class="hidden">
                     <select name="model" id="modal-model" class="w-full px-4 py-3 rounded bg-gray-50 border border-gray-300 focus:border-honda-red focus:outline-none transition text-sm">
                         <option value="" disabled selected>Select Model</option>
                     </select>
                 </div>
-
                 <textarea name="message" rows="3" placeholder="Message..." class="w-full px-4 py-3 rounded bg-gray-50 border border-gray-300 focus:border-honda-red focus:outline-none transition text-sm"></textarea>
                 <button type="submit" id="submitBtn" class="w-full bg-honda-red text-white px-6 py-3 rounded font-bold hover:bg-honda-dark transition shadow-lg text-sm uppercase tracking-wide">Submit Request</button>
             </form>
@@ -448,38 +747,28 @@
     <!-- Product Modal -->
     <div id="product-modal" class="fixed inset-0 z-[100] hidden overflow-y-auto backdrop-blur-sm bg-black/50 flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl p-6 relative animate-in zoom-in duration-200 flex flex-col md:flex-row gap-8 max-h-[90vh] overflow-y-auto">
-            
             <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 z-10"><i class="fas fa-times text-xl"></i></button>
-
-            <!-- Left Side: Image & Basic Info -->
             <div class="w-full md:w-1/3 flex-shrink-0">
                 <div class="h-48 flex items-center justify-center mb-6 bg-gray-50 rounded-lg group relative cursor-zoom-in">
                     <img id="modal-img" src="" alt="" class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105">
                 </div>
-
                 <h3 id="modal-title" class="text-3xl font-bold text-gray-900 text-center font-display mb-1"></h3>
                 <p id="modal-price" class="text-xl font-bold text-honda-red text-center mb-6"></p>
-                
-                <!-- Variants -->
                 <div class="mb-4">
                     <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Variants</h4>
                     <div id="modal-variants" class="flex flex-wrap gap-2 text-sm justify-center"></div>
                 </div>
-
-                <!-- Colors -->
                 <div class="mb-8">
                     <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 text-center">Colors</h4>
                     <div id="modal-colors" class="flex flex-wrap gap-2 justify-center"></div>
                 </div>
-
                 <div class="space-y-3">
-                    <a id="modal-brochure" href="#" target="_blank" class="block w-full text-center text-xs text-gray-500 hover:text-honda-red underline py-2">Download Brochure</a>
-                    <button id="product-book-btn" class="w-full bg-honda-red text-white py-3 rounded font-bold hover:bg-red-700 shadow-lg  tracking-wide">Book Now</button>
-                    
+                    <div class="flex gap-4">
+                        <a id="modal-brochure" href="#" target="_blank" class="flex-1 text-center bg-gray-800 text-white rounded font-bold shadow-lg hover:bg-black transition py-3 text-sm uppercase tracking-wide">Brochure</a>
+                        <button id="product-book-btn" class="flex-1 bg-honda-red text-white py-3 rounded font-bold hover:bg-red-700 shadow-lg text-sm uppercase tracking-wide">Book</button>
+                    </div>
                 </div>
             </div>
-
-            <!-- Right Side: Tech Specs -->
             <div class="w-full md:w-2/3 border-l border-gray-100 md:pl-8 flex flex-col">
                 <h4 class="text-xl font-bold text-gray-900 mb-6">Technical Specifications</h4>
                 <div id="specs-tabs" class="flex flex-wrap gap-2 border-b border-gray-200 pb-1 mb-4 overflow-x-auto no-scrollbar"></div>
@@ -493,7 +782,6 @@
         <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-150 cursor-move">
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-8 right-8 bg-gray-900 text-white px-6 py-4 rounded shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-[110] flex items-center gap-3">
         <i class="fas fa-check-circle text-green-400 text-xl"></i> 
         <span class="font-medium">Request Sent Successfully!</span>
