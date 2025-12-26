@@ -284,7 +284,7 @@ function renderHeroCarousel() {
 
     // Create Slides
     track.innerHTML = offers.map(o => `
-        <div class="carousel-slide w-full shrink-0 p-2 cursor-pointer transition-transform duration-500 hover:scale-[1.02]" onclick="openEnquiryModal('${o.type}', '${o.title}')">
+        <div class="carousel-slide min-w-full w-full shrink-0 p-2 cursor-pointer transition-transform duration-500 hover:scale-[1.02]" onclick="openEnquiryModal('${o.type}', '${o.title}')">
             <div class="rounded-2xl overflow-hidden shadow-2xl border-4 border-white aspect-video relative group bg-white">
                 <img src="${getDirectLink(o.image_url)}" class="w-full h-full object-fill bg-gray-50 transition-transform duration-700 group-hover:scale-105">
                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
@@ -709,3 +709,4 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
     initShowroomCarousel();
 });
+
