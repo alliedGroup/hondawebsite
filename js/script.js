@@ -51,9 +51,11 @@ function getYouTubeId(url) {
 // ============================================================
 let appData = {
     config: { hero_video_url: "videos/play1home.mp4", whatsapp_number: "919854092624" },
-    services: [], offers: [], dealers: [], products: []
+    services: [],
+    offers: [],
+    dealers: [],
+    products: []   
 };
-
 // ============================================================
 // INIT
 // ============================================================
@@ -86,7 +88,7 @@ async function init() {
                     brochure: v.brochure_url || v.brochure
                 }));
 
-                // Find Colors - NOW CHECKS MORE COLUMN NAMES
+                // Find Colors
                 const colors = (raw.colors || []).filter(c => {
                     const cId = standardizeId(c.product_id || c.id || c.product);
                     return cId === pId || cId === pName;
@@ -101,32 +103,28 @@ async function init() {
                     return sId === pId || sId === pName;
                 });
 
-                // Helper to normalize the "Type" field (handles 'category', 'vehicle_type', etc)
                 let type = p.type || p.category || p.vehicle_type || "";
                 
-                // SUPER ROBUST Image Finder (Checks all possible column names)
                 let img = p.image_url || p.image || p.img || p.url || p.photo || p.link || "";
-                
-                // Trim strings to avoid hidden spaces breaking links
                 if(img && typeof img === 'string') img = img.trim();
 
-                // Fallback to first color image if main image is missing
                 if ((!img || img === "") && colors.length > 0) {
                     img = colors[0].img;
                 }
 
                 return {
                     ...p,
-                    type: type,
+                    type: type, 
                     variants: variants,
                     colors: colors,
                     specs: processSpecs(pSpecs),
-                    image_url: img
+                    image_url: img,
+                    brochure_url: p.brochure_url || p.brochure
                 };
             });
             
             appData.services = raw.services || [];
-            appData.offers = raw.offers || [];
+            appData.offers = raw.offers || []; 
             appData.dealers = raw.dealers || [];
             
             if(raw.config) {
@@ -197,13 +195,14 @@ function showErrorState() {
 function renderAllSections() {
     renderHero();
     renderSocials();
+    renderHeroCarousel();
     renderProducts();
     renderOffers();
     renderDealers();
-    renderServiceImages();
-    // renderDepartments(); <-- REMOVED as it's now in HTML
+    renderServiceImages();         
     populateModelDropdown();
 }
+
 
 function renderHero() {
     const container = document.getElementById('hero-media-container');
@@ -223,6 +222,111 @@ function renderHero() {
         }
     }
 }
+
+// --- CAROUSEL LOGIC ---
+let carouselIndex = 0;
+let carouselInterval;
+
+function renderHeroCarousel() {
+    const track = document.getElementById('hero-carousel-track');
+    const section = document.getElementById('hero-carousel-section');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    const dotsContainer = document.getElementById('carousel-dots');
+
+    if (!track || !section) return;
+
+    // Use appData.offers directly
+    const offers = appData.offers.slice(0, 5); // Take top 5 for slider
+
+    if (offers.length === 0) {
+        section.classList.add('hidden');
+        return;
+    }
+
+    section.classList.remove('hidden');
+    
+    // Clear existing
+    track.innerHTML = '';
+    dotsContainer.innerHTML = '';
+
+    // Create Slides
+    track.innerHTML = offers.map(o => `
+        <div class="carousel-slide w-full shrink-0 p-2 cursor-pointer transition-transform duration-500 hover:scale-[1.02]" onclick="openEnquiryModal('${o.type}', '${o.title}')">
+            <div class="rounded-2xl overflow-hidden shadow-2xl border-4 border-white aspect-video relative group bg-white">
+                <img src="${getDirectLink(o.image_url)}" class="w-full h-full object-fill bg-gray-50 transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+            </div>
+        </div>
+    `).join('');
+
+    // Create Dots (Mobile & Desktop)
+    dotsContainer.innerHTML = offers.map((_, i) => `
+        <button onclick="goToSlide(${i})" class="w-3 h-3 rounded-full transition-all duration-300 border border-gray-300 ${i===0 ? 'bg-honda-red w-8 border-honda-red' : 'bg-white hover:bg-gray-100'}"></button>
+    `).join('');
+
+    // Event Listeners
+    if(prevBtn) prevBtn.onclick = () => moveCarousel(-1);
+    if(nextBtn) nextBtn.onclick = () => moveCarousel(1);
+
+    // Auto Play
+    startCarouselAutoPlay();
+    section.onmouseenter = stopCarouselAutoPlay;
+    section.onmouseleave = startCarouselAutoPlay;
+
+    // Initial Update
+    updateCarouselPosition();
+    window.addEventListener('resize', updateCarouselPosition);
+}
+
+function moveCarousel(direction) {
+    const offers = appData.offers.slice(0, 5);
+    const itemsPerView = 1; // Always 1 full slide
+    const maxIndex = Math.max(0, offers.length - itemsPerView);
+
+    carouselIndex += direction;
+
+    if (carouselIndex < 0) carouselIndex = maxIndex;
+    if (carouselIndex > maxIndex) carouselIndex = 0;
+
+    updateCarouselPosition();
+}
+
+function goToSlide(index) {
+    carouselIndex = index;
+    updateCarouselPosition();
+}
+
+function updateCarouselPosition() {
+    const track = document.getElementById('hero-carousel-track');
+    const dots = document.getElementById('carousel-dots');
+    if(!track) return;
+
+    const slideWidth = 100; // Always 100%
+    
+    track.style.transform = `translateX(-${carouselIndex * slideWidth}%)`;
+
+    // Update Dots
+    if(dots) {
+        Array.from(dots.children).forEach((dot, i) => {
+            if(i === carouselIndex) {
+                dot.className = 'w-8 h-3 rounded-full transition-all duration-300 border border-honda-red bg-honda-red';
+            } else {
+                dot.className = 'w-3 h-3 rounded-full transition-all duration-300 border border-gray-300 bg-white hover:bg-gray-100';
+            }
+        });
+    }
+}
+
+function startCarouselAutoPlay() {
+    stopCarouselAutoPlay();
+    carouselInterval = setInterval(() => moveCarousel(1), 6000); // 6 seconds for better viewing
+}
+
+function stopCarouselAutoPlay() {
+    clearInterval(carouselInterval);
+}
+
 
 function renderProducts() {
     const mContainer = document.getElementById('motorcycle-grid');
@@ -277,9 +381,9 @@ function createProductCard(p) {
     // --- CASUAL STYLIST DESIGN (Two-Tone) ---
     return `<div class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full" onclick="openProductModal('${p.product_id || p.id}')">
         <!-- Two-Tone: Light Gray Top for Image -->
-        <div class="h-64 bg-gray-100/50 flex items-center justify-center p-6 relative overflow-hidden group-hover:bg-gray-100 transition-colors duration-500">
+        <div class="h-64 bg-gray-100/50 flex items-center justify-center  relative overflow-hidden group-hover:bg-gray-100 transition-colors duration-500">
             <!-- Note: Removed mix-blend-multiply to keep PNGs clean on gray -->
-            <img src="${displayImage}" alt="${p.name}" loading="lazy" class="h-full w-auto object-cover mix-blend-multiply transition duration-500 group-hover:scale-110" onerror="this.src='https://placehold.co/600x400?text=${p.name}'">
+            <img src="${displayImage}" alt="${p.name}" loading="lazy" class="h-auto w-auto object-cover mix-blend-multiply transition duration-500 group-hover:scale-110" onerror="this.src='https://placehold.co/600x400?text=${p.name}'">
             ${variantBadge}
         </div>
         
@@ -288,7 +392,10 @@ function createProductCard(p) {
             <div class="flex justify-between items-start mb-2">
                 <div>
                     <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">${p.type || "Honda"}</span>
-                    <h3 class="font-display font-bold text-xl text-gray-900 leading-tight group-hover:text-honda-red transition-colors">${p.name}</h3>
+                    <h3 class="font-display font-bold text-xl text-gray-900 leading-tight group-hover:text-honda-red transition-colors">
+                        ${toTitleCase(p.name)}
+                        </h3>
+
                 </div>
             </div>
             
@@ -315,7 +422,7 @@ function openProductModal(productId) {
     if(!p) return;
 
     const modal = document.getElementById('product-modal');
-    document.getElementById('modal-title').innerText = p.name;
+    document.getElementById('modal-title').innerText = toTitleCase(p.name);
     document.getElementById('modal-price').innerText = `Ex-Showroom: ₹ ${p.price || 'N/A'}`;
     
     const img = document.getElementById('modal-img');
@@ -324,7 +431,14 @@ function openProductModal(productId) {
     img.onclick = () => openLightbox(img.src);
 
     const broLink = document.getElementById('modal-brochure');
-    const broUrl = getDirectLink(p.brochure_url || p.brochure, true);
+    
+    // FALLBACK LOGIC: Use product brochure, OR first variant's brochure, OR hide if none.
+    let brochureUrl = p.brochure_url || p.brochure;
+    if ((!brochureUrl || brochureUrl === "#") && p.variants && p.variants.length > 0) {
+        brochureUrl = p.variants[0].brochure;
+    }
+
+    const broUrl = getDirectLink(brochureUrl, true);
     broLink.href = broUrl;
     broLink.classList.toggle('hidden', broUrl === '#');
 
@@ -336,7 +450,7 @@ function openProductModal(productId) {
                 const activeClass = idx === 0 ? 'bg-honda-red text-white border-honda-red' : 'bg-white text-gray-700 border-gray-200 hover:border-honda-red';
                 return `<button onclick="updateVariant(this, '${v.price}', '${v.brochure}')" 
                     class="variant-btn px-4 py-2 m-1 rounded text-xs font-bold border transition duration-200 uppercase tracking-wide ${activeClass}">
-                    ${v.name}
+                    ${toTitleCase(v.name)}
                 </button>`;
             }).join('');
             if(p.variants[0].price) document.getElementById('modal-price').innerText = `Ex-Showroom: ₹ ${p.variants[0].price}`;
@@ -468,9 +582,10 @@ function renderOffers() {
         return `<div onclick="openEnquiryModal('${o.type}', '${o.title}')" class="bg-white rounded-xl shadow-lg cursor-pointer border-t-4 ${isFin?'border-honda-red':'border-blue-600'} flex flex-col group overflow-hidden">
             <div class="h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
                 <img src="${getDirectLink(o.image_url)}" class="w-full h-full object-contain p-2 group-hover:scale-105 transition cursor-zoom-in" 
-                     onclick="event.stopPropagation(); openLightbox(this.src)">
+                      onclick="event.stopPropagation(); openLightbox(this.src)">
             </div>
-            <div class="p-6 text-center flex-grow flex flex-col"><h3 class="font-bold text-xl mb-2">${o.title}</h3><p class="text-sm text-gray-600 mb-4">${o.description}</p><span class="mt-auto font-bold text-xs uppercase ${isFin?'text-honda-red':'text-blue-600'}">Enquire Now &rarr;</span></div>
+            <div class="p-6 text-center flex-grow flex flex-col"><h3 class="font-bold text-xl mb-2">${toTitleCase(o.title)}</h3>
+            <p class="text-sm text-gray-600 mb-4">${o.description}</p><span class="mt-auto font-bold text-xs uppercase ${isFin?'text-honda-red':'text-blue-600'}">Enquire Now &rarr;</span></div>
         </div>`;
     }).join('');
 }
@@ -483,7 +598,7 @@ function renderDealers() {
             <div class="w-full sm:w-28 h-28 bg-gray-50 rounded shrink-0 overflow-hidden">
                 <img src="${getDirectLink(d.image_url)}" class="w-full h-full object-cover cursor-zoom-in" onclick="openLightbox(this.src)">
             </div>
-            <div><h3 class="font-bold text-lg">${d.name}</h3><p class="text-sm text-gray-500 mb-2"><i class="fas fa-map-marker-alt text-honda-red mr-1"></i> ${d.location}</p>
+            <div><h3 class="font-bold text-lg">${toTitleCase(d.name)}</h3><p class="text-sm text-gray-500 mb-2"><i class="fas fa-map-marker-alt text-honda-red mr-1"></i> ${d.location}</p>
             ${d.sales_contact?`<div class="text-sm"><span class="font-bold text-xs text-gray-400">SALES:</span> <a href="tel:${d.sales_contact}">${d.sales_contact}</a></div>`:''}
             ${d.service_contact?`<div class="text-sm"><span class="font-bold text-xs text-gray-400">SERVICE:</span> <a href="tel:${d.service_contact}">${d.service_contact}</a></div>`:''}
             </div>
@@ -518,14 +633,47 @@ window.openLightbox = function(src) {
     document.getElementById('lightbox-modal').classList.remove('hidden'); 
 };
 
+function scrollToModels() {
+    document.getElementById('explore-models').scrollIntoView({behavior: 'smooth'});
+}
+// ============================================================
+// TEXT FORMATTER: Title Case (Auto Capitalization)
+// ============================================================
+function toTitleCase(str) {
+    if (!str) return '';
+    return str
+        .toLowerCase()
+        .replace(/\b\w/g, char => char.toUpperCase());
+}
+function initShowroomCarousel() {
+    const slides = document.querySelectorAll('.carousel-img');
+    let index = 0;
+
+    if (!slides || slides.length === 0) return;
+
+    setInterval(() => {
+        slides[index].classList.remove('opacity-100');
+        slides[index].classList.add('opacity-0');
+
+        index = (index + 1) % slides.length;
+
+        slides[index].classList.remove('opacity-0');
+        slides[index].classList.add('opacity-100');
+    }, 2000); // change image every 2 seconds
+}
+
+
 function closeEnquiryModal() { document.getElementById('enquiry-modal').classList.add('hidden'); }
 function closeModal() { document.getElementById('product-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox-modal').classList.remove('hidden'); }
 function closeLightbox() { document.getElementById('lightbox-modal').classList.add('hidden'); }
 function toggleModelDropdown(val) { document.getElementById('model-select-container').classList.toggle('hidden', !(val === 'New Model' || val === 'Exchange')); }
-function populateModelDropdown() { const s = document.getElementById('modal-model'); s.innerHTML = '<option value="" disabled selected>Select Model</option>'; appData.products.forEach(p => { const o = document.createElement('option'); o.value = p.name; o.innerText = p.name; s.appendChild(o); }); }
+function populateModelDropdown() { const s = document.getElementById('modal-model'); s.innerHTML = '<option value="" disabled selected>Select Model</option>'; appData.products.forEach(p => { const o = document.createElement('option'); o.value = p.name; o.innerText = toTitleCase(p.name); s.appendChild(o); }); }
 function getColorHex(n) { n=n.toLowerCase(); if(n.includes('red')) return '#DC2626'; if(n.includes('blue')) return '#2563EB'; if(n.includes('black')) return '#1F2937'; if(n.includes('white')) return '#F3F4F6'; if(n.includes('grey')) return '#6B7280'; if(n.includes('yellow')) return '#EAB308'; if(n.includes('matte')) return '#374151'; return '#9CA3AF'; }
 window.handleFormSubmit = function(e) { e.preventDefault(); const btn = document.getElementById('submitBtn'); const form = e.target; const txt = btn.innerText; btn.innerText = "Sending..."; btn.disabled = true; const d = {}; new FormData(form).forEach((v, k) => d[k] = v); fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d) }).then(() => { const t = document.getElementById('toast'); t.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000); form.reset(); closeEnquiryModal(); }).catch(e => console.error(e)).finally(() => { btn.innerText = txt; btn.disabled = false; }); }
 
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    initShowroomCarousel();
+});
