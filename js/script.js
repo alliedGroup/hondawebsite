@@ -265,6 +265,8 @@ function renderHeroCarousel() {
     const prevBtn = document.getElementById('carousel-prev');
     const nextBtn = document.getElementById('carousel-next');
     const dotsContainer = document.getElementById('carousel-dots');
+    console.log("Carousel offers count:", offers.length);
+
 
     if (!track || !section) return;
 
@@ -272,7 +274,7 @@ function renderHeroCarousel() {
     const offers = appData.offers.slice(0, 5); // Take top 5 for slider
 
     if (offers.length === 0) {
-        section.classList.add('hidden');
+        section.classList.add('');
         return;
     }
 
@@ -303,8 +305,8 @@ function renderHeroCarousel() {
 
     // Auto Play
     startCarouselAutoPlay();
-    section.onmouseenter = stopCarouselAutoPlay;
-    section.onmouseleave = startCarouselAutoPlay;
+    section.onmouseenter = setTimeout(startCarouselAutoPlay, 300);
+    section.onmouseleave = setTimeout(startCarouselAutoPlay, 300);
 
     // Initial Update
     updateCarouselPosition();
@@ -709,4 +711,5 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
     initShowroomCarousel();
 });
+
 
