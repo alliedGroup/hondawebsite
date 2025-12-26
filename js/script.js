@@ -67,52 +67,46 @@ async function init() {
         // Add timestamp to prevent caching old data
         const fetchUrl = `${GOOGLE_SCRIPT_URL}?v=${Date.now()}`;
         console.log("Fetching fresh data from:", fetchUrl);
-
+        
         const response = await fetch(fetchUrl);
         const raw = await response.json();
-
         console.log("Data Received:", raw);
 
         if (raw) {
-            // ==============================
-            // MERGE LOGIC: PRODUCTS
-            // ==============================
+            // MERGE LOGIC: Connects Specs sheet to Products
             appData.products = (raw.products || []).map(p => {
                 const pId = standardizeId(p.product_id || p.id || p.code);
                 const pName = standardizeId(p.name);
 
-                // Variants
-                const variants = (raw.variants || [])
-                    .filter(v => {
-                        const vId = standardizeId(v.product_id || v.id || v.product);
-                        return vId === pId || vId === pName;
-                    })
-                    .map(v => ({
-                        name: v.variant_name || v.name || v.variant,
-                        price: v.variant_price || v.price,
-                        brochure: v.brochure_url || v.brochure
-                    }));
+                // Find Variants
+                const variants = (raw.variants || []).filter(v => {
+                    const vId = standardizeId(v.product_id || v.id || v.product);
+                    return vId === pId || vId === pName;
+                }).map(v => ({
+                    name: v.variant_name || v.name || v.variant,
+                    price: v.variant_price || v.price,
+                    brochure: v.brochure_url || v.brochure
+                }));
 
-                // Colors
-                const colors = (raw.colors || [])
-                    .filter(c => {
-                        const cId = standardizeId(c.product_id || c.id || c.product);
-                        return cId === pId || cId === pName;
-                    })
-                    .map(c => ({
-                        name: c.color_name || c.name || c.color,
-                        img: c.image_url || c.url || c.image || c.link || c.img
-                    }));
+                // Find Colors
+                const colors = (raw.colors || []).filter(c => {
+                    const cId = standardizeId(c.product_id || c.id || c.product);
+                    return cId === pId || cId === pName;
+                }).map(c => ({
+                    name: c.color_name || c.name || c.color,
+                    img: c.image_url || c.url || c.image || c.link || c.img
+                }));
 
-                // Specs
-                const pSpecs = (raw.specs || []).find(s => {
+                // Find Specs
+                let pSpecs = (raw.specs || []).find(s => {
                     const sId = standardizeId(s.product_id || s.id || s.model || s.product);
                     return sId === pId || sId === pName;
                 });
 
                 let type = p.type || p.category || p.vehicle_type || "";
+                
                 let img = p.image_url || p.image || p.img || p.url || p.photo || p.link || "";
-                if (img && typeof img === "string") img = img.trim();
+                if(img && typeof img === 'string') img = img.trim();
 
                 if ((!img || img === "") && colors.length > 0) {
                     img = colors[0].img;
@@ -120,50 +114,24 @@ async function init() {
 
                 return {
                     ...p,
-                    type,
-                    variants,
-                    colors,
+                    type: type, 
+                    variants: variants,
+                    colors: colors,
                     specs: processSpecs(pSpecs),
                     image_url: img,
                     brochure_url: p.brochure_url || p.brochure
                 };
             });
-
-            // ==============================
-            // OTHER DATA (SAFE)
-            // ==============================
+            
             appData.services = raw.services || [];
-            appData.dealers  = raw.dealers  || [];
-
-            // ==============================
-            // 🔐 OFFERS (CAROUSEL FIX)
-            // ==============================
-            if (Array.isArray(raw.offers) && raw.offers.length > 0) {
-                appData.offers = raw.offers;
-            } else {
-                console.warn("Offers missing – using fallback");
-                appData.offers = [
-                    {
-                        title: "Festival Finance Offer",
-                        type: "Finance",
-                        image_url: "https://placehold.co/1200x600?text=Festival+Offer"
-                    }
-                ];
-            }
-
-            // ==============================
-            // CONFIG
-            // ==============================
-            if (raw.config) {
+            appData.offers = raw.offers || []; 
+            appData.dealers = raw.dealers || [];
+            
+            if(raw.config) {
                 appData.config = {};
-                raw.config.forEach(c => {
-                    if (c.key) appData.config[c.key] = c.value;
-                });
+                raw.config.forEach(c => { if(c.key) appData.config[c.key] = c.value; });
             }
 
-            // ==============================
-            // RENDER UI
-            // ==============================
             renderAllSections();
         }
     } catch (e) {
@@ -265,8 +233,6 @@ function renderHeroCarousel() {
     const prevBtn = document.getElementById('carousel-prev');
     const nextBtn = document.getElementById('carousel-next');
     const dotsContainer = document.getElementById('carousel-dots');
-    console.log("Carousel offers count:", offers.length);
-
 
     if (!track || !section) return;
 
@@ -274,7 +240,7 @@ function renderHeroCarousel() {
     const offers = appData.offers.slice(0, 5); // Take top 5 for slider
 
     if (offers.length === 0) {
-        section.classList.add('');
+        section.classList.add('hidden');
         return;
     }
 
@@ -286,7 +252,7 @@ function renderHeroCarousel() {
 
     // Create Slides
     track.innerHTML = offers.map(o => `
-        <div class="carousel-slide min-w-full w-full shrink-0 p-2 cursor-pointer transition-transform duration-500 hover:scale-[1.02]" onclick="openEnquiryModal('${o.type}', '${o.title}')">
+        <div class="carousel-slide w-full shrink-0 p-2 cursor-pointer transition-transform duration-500 hover:scale-[1.02]" onclick="openEnquiryModal('${o.type}', '${o.title}')">
             <div class="rounded-2xl overflow-hidden shadow-2xl border-4 border-white aspect-video relative group bg-white">
                 <img src="${getDirectLink(o.image_url)}" class="w-full h-full object-fill bg-gray-50 transition-transform duration-700 group-hover:scale-105">
                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
@@ -305,8 +271,8 @@ function renderHeroCarousel() {
 
     // Auto Play
     startCarouselAutoPlay();
-    section.onmouseenter = setTimeout(startCarouselAutoPlay, 300);
-    section.onmouseleave = setTimeout(startCarouselAutoPlay, 300);
+    section.onmouseenter = stopCarouselAutoPlay;
+    section.onmouseleave = startCarouselAutoPlay;
 
     // Initial Update
     updateCarouselPosition();
@@ -711,5 +677,4 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
     initShowroomCarousel();
 });
-
 
