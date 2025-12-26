@@ -67,46 +67,52 @@ async function init() {
         // Add timestamp to prevent caching old data
         const fetchUrl = `${GOOGLE_SCRIPT_URL}?v=${Date.now()}`;
         console.log("Fetching fresh data from:", fetchUrl);
-        
+
         const response = await fetch(fetchUrl);
         const raw = await response.json();
+
         console.log("Data Received:", raw);
 
         if (raw) {
-            // MERGE LOGIC: Connects Specs sheet to Products
+            // ==============================
+            // MERGE LOGIC: PRODUCTS
+            // ==============================
             appData.products = (raw.products || []).map(p => {
                 const pId = standardizeId(p.product_id || p.id || p.code);
                 const pName = standardizeId(p.name);
 
-                // Find Variants
-                const variants = (raw.variants || []).filter(v => {
-                    const vId = standardizeId(v.product_id || v.id || v.product);
-                    return vId === pId || vId === pName;
-                }).map(v => ({
-                    name: v.variant_name || v.name || v.variant,
-                    price: v.variant_price || v.price,
-                    brochure: v.brochure_url || v.brochure
-                }));
+                // Variants
+                const variants = (raw.variants || [])
+                    .filter(v => {
+                        const vId = standardizeId(v.product_id || v.id || v.product);
+                        return vId === pId || vId === pName;
+                    })
+                    .map(v => ({
+                        name: v.variant_name || v.name || v.variant,
+                        price: v.variant_price || v.price,
+                        brochure: v.brochure_url || v.brochure
+                    }));
 
-                // Find Colors
-                const colors = (raw.colors || []).filter(c => {
-                    const cId = standardizeId(c.product_id || c.id || c.product);
-                    return cId === pId || cId === pName;
-                }).map(c => ({
-                    name: c.color_name || c.name || c.color,
-                    img: c.image_url || c.url || c.image || c.link || c.img
-                }));
+                // Colors
+                const colors = (raw.colors || [])
+                    .filter(c => {
+                        const cId = standardizeId(c.product_id || c.id || c.product);
+                        return cId === pId || cId === pName;
+                    })
+                    .map(c => ({
+                        name: c.color_name || c.name || c.color,
+                        img: c.image_url || c.url || c.image || c.link || c.img
+                    }));
 
-                // Find Specs
-                let pSpecs = (raw.specs || []).find(s => {
+                // Specs
+                const pSpecs = (raw.specs || []).find(s => {
                     const sId = standardizeId(s.product_id || s.id || s.model || s.product);
                     return sId === pId || sId === pName;
                 });
 
                 let type = p.type || p.category || p.vehicle_type || "";
-                
                 let img = p.image_url || p.image || p.img || p.url || p.photo || p.link || "";
-                if(img && typeof img === 'string') img = img.trim();
+                if (img && typeof img === "string") img = img.trim();
 
                 if ((!img || img === "") && colors.length > 0) {
                     img = colors[0].img;
@@ -114,24 +120,50 @@ async function init() {
 
                 return {
                     ...p,
-                    type: type, 
-                    variants: variants,
-                    colors: colors,
+                    type,
+                    variants,
+                    colors,
                     specs: processSpecs(pSpecs),
                     image_url: img,
                     brochure_url: p.brochure_url || p.brochure
                 };
             });
-            
+
+            // ==============================
+            // OTHER DATA (SAFE)
+            // ==============================
             appData.services = raw.services || [];
-            appData.offers = raw.offers || []; 
-            appData.dealers = raw.dealers || [];
-            
-            if(raw.config) {
-                appData.config = {};
-                raw.config.forEach(c => { if(c.key) appData.config[c.key] = c.value; });
+            appData.dealers  = raw.dealers  || [];
+
+            // ==============================
+            // 🔐 OFFERS (CAROUSEL FIX)
+            // ==============================
+            if (Array.isArray(raw.offers) && raw.offers.length > 0) {
+                appData.offers = raw.offers;
+            } else {
+                console.warn("Offers missing – using fallback");
+                appData.offers = [
+                    {
+                        title: "Festival Finance Offer",
+                        type: "Finance",
+                        image_url: "https://placehold.co/1200x600?text=Festival+Offer"
+                    }
+                ];
             }
 
+            // ==============================
+            // CONFIG
+            // ==============================
+            if (raw.config) {
+                appData.config = {};
+                raw.config.forEach(c => {
+                    if (c.key) appData.config[c.key] = c.value;
+                });
+            }
+
+            // ==============================
+            // RENDER UI
+            // ==============================
             renderAllSections();
         }
     } catch (e) {
